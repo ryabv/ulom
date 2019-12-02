@@ -42,3 +42,38 @@
         }
     }
 }
+
+@media (max-width: $mobile) {
+    .TimeUnit {
+        width: $size-m;
+        height: $size-m;
+        &-Side {
+            width: $size-m;
+            height: $size-m;
+
+            &_back {
+                transform: translateZ($depth-m);
+            }
+    
+            &_left {
+                transform: translateX($depth-m) rotateY(90deg);
+            }
+    
+            &_right {
+                transform: translateX(-$depth-m) rotateY(90deg);
+            }
+    
+            &_top {
+                transform: translateY($depth-m) rotateX(90deg);
+            }
+    
+            &_bottom {
+                transform: translateY(-$depth-m) rotateX(90deg);
+            }
+    
+            &_front {
+                transform: translateZ(-$depth-m);
+            }
+        }
+    }
+}

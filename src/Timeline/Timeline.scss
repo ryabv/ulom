@@ -1,22 +1,23 @@
 @import '../variables.scss';
 
 .Timeline {
+    display: grid;
+    grid-template-columns: repeat(24, $size);
+    grid-template-rows: repeat(12, $size);
+    grid-gap: $size;
     padding: 50px;
     box-sizing: border-box;
     transform-style: preserve-3d;
     // animation: rotate 10s infinite linear;
-    display: grid;
+}
 
-    &_desktop {
-        grid-template-columns: repeat(12, $size);
-        grid-template-rows: repeat(24, $size);
-        grid-gap: $size;
-    }
 
-    &_mobile {
-        grid-template-columns: repeat(24, $size);
-        grid-template-rows: repeat(12, $size);
-        grid-gap: $size;
+@media (max-width: $mobile) {
+    .Timeline {
+        grid-template-columns: repeat(12, $size-m);
+        grid-template-rows: repeat(24, $size-m);
+        grid-gap: $size-m;
+        padding: 20px;
     }
 }
 

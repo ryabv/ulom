@@ -10,3 +10,8 @@ $left-color: darken($main-color, 10%);
 $right-color: darken($main-color, 10%);
 $top-color: darken($main-color, 5%);
 $bottom-color: darken($main-color, 15%);
+
+// Mobile
+$mobile: 700px;
+$size-m: 12px;
+$depth-m: $size-m / 2 * -1;

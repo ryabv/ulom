@@ -6,9 +6,6 @@ import { cn } from '@bem-react/classname';
 const cnTimeline = cn('Timeline');
 
 const Timeline: FC = () => {
-
-    const isDesktop = document.body.clientWidth > 700;
-
     const makeGrid = (timeUnitValueInMins: number) => {
         const unitsPerHour = 60 / timeUnitValueInMins;
         const unitsPerDay = 24 * unitsPerHour;
@@ -22,7 +19,7 @@ const Timeline: FC = () => {
     };
 
     return (
-        <div className={isDesktop ? cnTimeline({mobile: true}) : cnTimeline({desktop: true})}>
+        <div className={cnTimeline()}>
             {makeGrid(5)}
         </div>
     );
