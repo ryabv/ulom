@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import './Timeline.scss';
 import TimeUnit from '../TimeUnit/TimeUnit'
 import { cn } from '@bem-react/classname';
@@ -12,7 +12,11 @@ interface TimelineProps {
 const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
     const unitsPerHour = 60 / timeUnitValueInMins;
     const unitsPerDay = 24 * unitsPerHour;
-    const isDesktop = document.body.clientWidth > 700;
+    const [ isDesktop, setIsDesktop ] = useState(document.body.clientWidth > 700);
+
+    window.addEventListener('resize', () => {
+        setIsDesktop(document.body.clientWidth > 700);
+    });
 
     const makeGrid = () => {
         const timeUnits = [];
@@ -28,7 +32,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         } else {
             for (let i = 0; i < unitsPerDay; i++) {
                 if (i % unitsPerHour === 0) {
-                    timeUnits.push(<div className={cnTimeline('Header', {minutes: true})}>{i / unitsPerHour + 1}</div>);
+                    timeUnits.push(<div className={cnTimeline('Header', {hours: true})}>{i / unitsPerHour + 1}</div>);
                 }
     
                 timeUnits.push(<TimeUnit key={i} />);
