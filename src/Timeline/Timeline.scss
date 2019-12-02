@@ -2,22 +2,28 @@
 
 .Timeline {
     display: grid;
-    grid-template-columns: repeat(24, $size);
+    grid-template-columns: repeat(25, $size);
     grid-template-rows: repeat(12, $size);
     grid-gap: $size;
     padding: 50px;
     box-sizing: border-box;
     transform-style: preserve-3d;
     // animation: rotate 10s infinite linear;
+    &-Header {
+        text-align: center;
+    }
 }
 
 
 @media (max-width: $mobile) {
     .Timeline {
-        grid-template-columns: repeat(12, $size-m);
+        grid-template-columns: repeat(13, $size-m);
         grid-template-rows: repeat(24, $size-m);
         grid-gap: $size-m;
         padding: 20px;
+        &-Header {
+            font-size: 10px;
+        }
     }
 }
 

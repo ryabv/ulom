@@ -9,7 +9,7 @@ const Layout: FC = () => {
         <div className="Layout">
             <Header />
             <Main>
-                <Timeline />
+                <Timeline timeUnitValueInMins={5} />
             </Main>
         </div>
     );

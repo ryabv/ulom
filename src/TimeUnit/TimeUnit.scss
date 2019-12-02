@@ -41,6 +41,33 @@
             transform: translateZ(-$depth);
         }
     }
+
+    &:hover .TimeUnit-Side {
+        cursor: pointer;
+        &_back {
+            background: darken($back-color, 30%);
+        }
+
+        &_left {
+            background: darken($left-color, 30%);
+        }
+
+        &_right {
+            background: darken($right-color, 30%);
+        }
+
+        &_top {
+            background: darken($top-color, 30%);
+        }
+
+        &_bottom {
+            background: darken($bottom-color, 30%);
+        }
+
+        &_front {
+            background: darken($front-color, 30%);
+        }
+    }
 }
 
 @media (max-width: $mobile) {
