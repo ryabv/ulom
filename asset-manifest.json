@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/ryabv/ulom/static/css/main.b100e6da.chunk.css",
+    "main.js": "/ryabv/ulom/static/js/main.1026e054.chunk.js",
+    "main.js.map": "/ryabv/ulom/static/js/main.1026e054.chunk.js.map",
+    "runtime-main.js": "/ryabv/ulom/static/js/runtime-main.fe37dc86.js",
+    "runtime-main.js.map": "/ryabv/ulom/static/js/runtime-main.fe37dc86.js.map",
+    "static/js/2.56f22932.chunk.js": "/ryabv/ulom/static/js/2.56f22932.chunk.js",
+    "static/js/2.56f22932.chunk.js.map": "/ryabv/ulom/static/js/2.56f22932.chunk.js.map",
+    "index.html": "/ryabv/ulom/index.html",
+    "precache-manifest.7e99099b68999daa86015593ea7831bd.js": "/ryabv/ulom/precache-manifest.7e99099b68999daa86015593ea7831bd.js",
+    "service-worker.js": "/ryabv/ulom/service-worker.js",
+    "static/css/main.b100e6da.chunk.css.map": "/ryabv/ulom/static/css/main.b100e6da.chunk.css.map",
+    "static/media/logo.svg": "/ryabv/ulom/static/media/logo.25bf045c.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.fe37dc86.js",
+    "static/js/2.56f22932.chunk.js",
+    "static/css/main.b100e6da.chunk.css",
+    "static/js/main.1026e054.chunk.js"
+  ]
+}
