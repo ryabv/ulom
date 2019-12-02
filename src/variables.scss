@@ -1,2 +1,12 @@
-$size: 100px;
+$size: 30px;
 $depth: $size / 2 * -1;
+
+// TimeUnit colors
+$main-color: lightgreen;
+
+$front-color: $main-color;
+$back-color: darken($main-color, 15%);
+$left-color: darken($main-color, 10%);
+$right-color: darken($main-color, 10%);
+$top-color: darken($main-color, 5%);
+$bottom-color: darken($main-color, 15%);

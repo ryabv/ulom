@@ -4,42 +4,40 @@
     position: relative;
     width: $size;
     height: $size;
-    margin: 0 auto;
 
     &-Side {
         position: absolute;
         width: $size;
         height: $size;
-        border: 1px solid orange;
         opacity: 0.7;
 
         &_back {
-            background: orange;
+            background: $back-color;
             transform: translateZ($depth);
         }
 
         &_left {
-            background: lightgreen;
+            background: $left-color;
             transform: translateX($depth) rotateY(90deg);
         }
 
         &_right {
-            background: yellowgreen;
+            background: $right-color;
             transform: translateX(-$depth) rotateY(90deg);
         }
 
         &_top {
-            background: skyblue;
+            background: $top-color;
             transform: translateY($depth) rotateX(90deg);
         }
 
         &_bottom {
-            background: steelblue;
+            background: $bottom-color;
             transform: translateY(-$depth) rotateX(90deg);
         }
 
         &_front {
-            background: gold;
+            background: $front-color;
             transform: translateZ(-$depth);
         }
     }

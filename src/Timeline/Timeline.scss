@@ -1,12 +1,23 @@
 @import '../variables.scss';
 
 .Timeline {
-    padding: 100px;
+    padding: 50px;
     box-sizing: border-box;
     transform-style: preserve-3d;
-    perspective: 1000px;
-    perspective-origin: center $depth;
-    animation: rotate 10s infinite linear;
+    // animation: rotate 10s infinite linear;
+    display: grid;
+
+    &_desktop {
+        grid-template-columns: repeat(12, $size);
+        grid-template-rows: repeat(24, $size);
+        grid-gap: $size;
+    }
+
+    &_mobile {
+        grid-template-columns: repeat(24, $size);
+        grid-template-rows: repeat(12, $size);
+        grid-gap: $size;
+    }
 }
 
 
