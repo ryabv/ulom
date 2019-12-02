@@ -1,0 +1,46 @@
+@import '../variables.scss';
+
+.TimeUnit {
+    position: relative;
+    width: $size;
+    height: $size;
+    margin: 0 auto;
+
+    &-Side {
+        position: absolute;
+        width: $size;
+        height: $size;
+        border: 1px solid orange;
+        opacity: 0.7;
+
+        &_back {
+            background: orange;
+            transform: translateZ($depth);
+        }
+
+        &_left {
+            background: lightgreen;
+            transform: translateX($depth) rotateY(90deg);
+        }
+
+        &_right {
+            background: yellowgreen;
+            transform: translateX(-$depth) rotateY(90deg);
+        }
+
+        &_top {
+            background: skyblue;
+            transform: translateY($depth) rotateX(90deg);
+        }
+
+        &_bottom {
+            background: steelblue;
+            transform: translateY(-$depth) rotateX(90deg);
+        }
+
+        &_front {
+            background: gold;
+            transform: translateZ(-$depth);
+        }
+    }
+}
