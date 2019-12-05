@@ -1,25 +1,20 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import './TimeUnit.scss';
 import { cn } from '@bem-react/classname';
 
 const cnTimeUnit = cn('TimeUnit');
 
 interface TimeUnitProps {
-    min?: number,
-    h?: number
+    min: number,
+    h: number,
+    id: number
 }
 
-const TimeUnit: FC<TimeUnitProps> = ({ min, h }) => {
-    const [ isSelected, setIsSelected ] = useState(false);
-
-    const handleClick = () => {
-        setIsSelected(!isSelected);
-    };
-
+const TimeUnit: FC<TimeUnitProps> = ({ min, h, id }) => {
     return (
         <div
-            className={isSelected ? cnTimeUnit({ h, min, selected: true }) : cnTimeUnit({ h, min })}
-            onClick={handleClick}
+            id={String(id)}
+            className={cnTimeUnit({ h, min })}
         >
             {/* <div className={cnTimeUnit('Side', {'back': true})}></div>
             <div className={cnTimeUnit('Side', {'left': true})}></div>

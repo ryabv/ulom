@@ -6,6 +6,8 @@
     height: $size;
     background: $main-color;
     cursor: pointer;
+    user-select: none;
+    touch-action: none;
 
     &-Side {
         position: absolute;

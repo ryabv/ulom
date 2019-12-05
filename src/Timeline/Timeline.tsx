@@ -13,23 +13,88 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
     const unitsPerHour = 60 / timeUnitValueInMins;
     const unitsPerDay = 24 * unitsPerHour;
     const [ isDesktop, setIsDesktop ] = useState(document.body.clientWidth > 700);
+    const [ isMouseDowned, setIsMouseDowned ] = useState(false);
+    const [ selectedRange, setSelectedRange ] = useState({start: 0, end: 0});
 
     window.addEventListener('resize', () => {
         setIsDesktop(document.body.clientWidth > 700);
     });
 
-    const getActiveLine = (e: any) => {
-        const time = e.target.classList.value.match(/(_h_|_min_).+/)[0];
-        const currTimeUnits = document.getElementsByClassName(`TimeUnit${time}`);
-        const currActiveTimeUnits = document.getElementsByClassName(`TimeUnit${time} TimeUnit_selected`);
-        
-        if (currActiveTimeUnits.length === currTimeUnits.length) {
-            for (let i = 0; i < currTimeUnits.length; i++) {
-                currTimeUnits[i].classList.toggle('TimeUnit_selected');
+    const checkIsTimeUnit = (el: any) => {
+        if (el.classList.contains('TimeUnit')) {
+            return true;
+        }
+        return false;
+    };
+
+    const handleMouseDown = (e: any) => {
+        if (checkIsTimeUnit(e.target)) {
+            e.target.classList.add('TimeUnit_selected');
+            const currElId = Number((e.target as HTMLElement).getAttribute('id'));
+            setIsMouseDowned(true);
+            setSelectedRange( {start: currElId, end: currElId} );
+        }
+    };
+
+    const handleMouseMove = (e: any) => {
+        if (isMouseDowned) {
+            if (checkIsTimeUnit(e.target)) {
+                let endId = 0;
+                if (e.touches) {
+                    const currEl = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+                    if (currEl && checkIsTimeUnit(currEl)) {
+                        endId = Number(currEl.getAttribute('id'));
+                        setSelectedRange({ ...selectedRange, end: endId });
+                    }
+                } else {
+                    endId = Number((e.target as HTMLElement).getAttribute('id'));
+                    setSelectedRange({ ...selectedRange, end: endId });
+                }
+
+                
+
+                const timeUnits = document.getElementsByClassName('TimeUnit');
+
+                for (let i = 0; i < timeUnits.length; i++) {
+                    const currTimeUnitId = Number(timeUnits[i].getAttribute('id'));
+                    if (selectedRange.start <= selectedRange.end) {
+                        if (currTimeUnitId >= selectedRange.start && currTimeUnitId <= selectedRange.end) {
+                            timeUnits[i].classList.add('TimeUnit_selected');
+                        } else {
+                            timeUnits[i].classList.remove('TimeUnit_selected');
+                        }
+                    } else {
+                        if (currTimeUnitId >= selectedRange.end && currTimeUnitId <= selectedRange.start) {
+                            timeUnits[i].classList.add('TimeUnit_selected');
+                        } else {
+                            timeUnits[i].classList.remove('TimeUnit_selected');
+                        }
+                    }
+                    
+                }
             }
-        } else {
-            for (let i = 0; i < currTimeUnits.length; i++) {
-                currTimeUnits[i].classList.add('TimeUnit_selected');
+        }
+    };
+
+    const handleMouseUp = (e: any) => {
+        setIsMouseDowned(false);
+    };
+
+    const getActiveLine = (e: any) => {
+        const time = e.target.classList.value.match(/(_h_|_min_).+/);
+
+        if (time) {
+            const currTimeUnits = document.getElementsByClassName(`TimeUnit${time[0]}`);
+            const currActiveTimeUnits = document.getElementsByClassName(`TimeUnit${time[0]} TimeUnit_selected`);
+            
+            if (currActiveTimeUnits.length === currTimeUnits.length) {
+                for (let i = 0; i < currTimeUnits.length; i++) {
+                    currTimeUnits[i].classList.toggle('TimeUnit_selected');
+                }
+            } else {
+                for (let i = 0; i < currTimeUnits.length; i++) {
+                    currTimeUnits[i].classList.add('TimeUnit_selected');
+                }
             }
         }
     };
@@ -49,6 +114,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 }
     
                 timeUnits.push(<TimeUnit
+                    id={i}
                     h={i % 24 + 1}
                     min={val}
                     key={i} 
@@ -59,11 +125,13 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 const val = Math.floor(i / unitsPerHour) + 1;
                 if (i % unitsPerHour === 0) {
                     timeUnits.push(<div 
+                        key={`hours-${i}`}
                         onClick={getActiveLine}
                         className={cnTimeline('Header', {hours: true, h: val})}>{val}</div>);
                 }
     
                 timeUnits.push(<TimeUnit 
+                    id={i}
                     h={val}
                     min={i % unitsPerHour * timeUnitValueInMins + timeUnitValueInMins}
                     key={i} 
@@ -98,6 +166,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
             for (let i = 0; i <= unitsPerHour; i++) {
                 const val = i ? i * timeUnitValueInMins : '';
                 minutesLine.push(<div
+                    key={i}
                     onClick={getActiveLine}
                     className={cnTimeline('Header', {minutes: true, min: val})}>{val}</div>);
             }
@@ -107,7 +176,15 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
     };
 
     return (
-        <div className={cnTimeline()}>
+        <div
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onTouchStart={handleMouseDown}
+            onTouchMove={handleMouseMove}
+            onTouchEnd={handleMouseUp}
+            className={cnTimeline()}
+        >
             {isDesktop ? makeHoursLine() : makeMinutesLine()}
             {makeGrid()}
         </div>

@@ -8,7 +8,8 @@
     padding: 50px;
     box-sizing: border-box;
     transform-style: preserve-3d;
-    // animation: rotate 10s infinite linear;
+    touch-action: none;
+
     &-Header {
         display: flex;
         align-items: center;
@@ -24,8 +25,8 @@
     .Timeline {
         grid-template-columns: repeat(13, $size-m);
         grid-template-rows: repeat(24, $size-m);
-        grid-gap: $size-m;
-        padding: 20px;
+        grid-gap: $size-m / 1.5;
+        padding: 20px 0;
         &-Header {
             font-size: $size-m * 0.7;
         }
