@@ -27,14 +27,6 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         return false;
     };
 
-    // const makeTimeUnitsUnselected = () => {
-    //     const selectedTimeUnits = document.getElementsByClassName('TimeUnit_selected');
-
-    //     while (selectedTimeUnits.length) {
-    //         selectedTimeUnits[selectedTimeUnits.length - 1].classList.remove('TimeUnit_selected');
-    //     }
-    // };
-
     const handleMouseDown = (e: any) => {
         if (checkIsTimeUnit(e.target)) {
             e.target.classList.add('TimeUnit_selected');
