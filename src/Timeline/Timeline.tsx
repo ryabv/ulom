@@ -52,11 +52,20 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 const timeUnits = document.getElementsByClassName('TimeUnit');
                 for (let i = 0; i < timeUnits.length; i++) {
                     const currTimeUnitId = Number(timeUnits[i].getAttribute('id'));
-                    if (currTimeUnitId >= selectedRange.start && currTimeUnitId <= selectedRange.end) {
-                        timeUnits[i].classList.add('TimeUnit_selected');
+                    if (selectedRange.start <= selectedRange.end) {
+                        if (currTimeUnitId >= selectedRange.start && currTimeUnitId <= selectedRange.end) {
+                            timeUnits[i].classList.add('TimeUnit_selected');
+                        } else {
+                            timeUnits[i].classList.remove('TimeUnit_selected');
+                        }
                     } else {
-                        timeUnits[i].classList.remove('TimeUnit_selected');
+                        if (currTimeUnitId >= selectedRange.end && currTimeUnitId <= selectedRange.start) {
+                            timeUnits[i].classList.add('TimeUnit_selected');
+                        } else {
+                            timeUnits[i].classList.remove('TimeUnit_selected');
+                        }
                     }
+                    
                 }
             }
         }
