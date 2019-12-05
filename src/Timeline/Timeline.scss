@@ -10,7 +10,11 @@
     transform-style: preserve-3d;
     // animation: rotate 10s infinite linear;
     &-Header {
-        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        user-select: none;
     }
 }
 

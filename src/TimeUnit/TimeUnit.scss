@@ -4,6 +4,8 @@
     position: relative;
     width: $size;
     height: $size;
+    background: $main-color;
+    cursor: pointer;
 
     &-Side {
         position: absolute;
@@ -42,6 +44,10 @@
         }
     }
 
+    &:hover {
+        background: darken($main-color, 30%);
+    }
+
     &:hover .TimeUnit-Side {
         cursor: pointer;
         &_back {
@@ -67,6 +73,10 @@
         &_front {
             background: darken($front-color, 30%);
         }
+    }
+
+    &_selected {
+        background: darken($main-color, 30%);
     }
 }
 
