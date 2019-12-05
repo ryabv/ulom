@@ -1,0 +1,40 @@
+@import '../variables.scss';
+
+.Timeline {
+    display: grid;
+    grid-template-columns: repeat(25, $size);
+    grid-template-rows: repeat(12, $size);
+    grid-gap: $size;
+    padding: 50px;
+    box-sizing: border-box;
+    transform-style: preserve-3d;
+    // animation: rotate 10s infinite linear;
+    &-Header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        user-select: none;
+        font-size: $size * 0.7;
+    }
+}
+
+
+@media (max-width: $mobile) {
+    .Timeline {
+        grid-template-columns: repeat(13, $size-m);
+        grid-template-rows: repeat(24, $size-m);
+        grid-gap: $size-m;
+        padding: 20px;
+        &-Header {
+            font-size: $size-m * 0.7;
+        }
+    }
+}
+
+
+@keyframes rotate {
+    100% {
+        transform: rotateY(360deg);
+    }
+}

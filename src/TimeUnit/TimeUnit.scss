@@ -1,0 +1,116 @@
+@import '../variables.scss';
+
+.TimeUnit {
+    position: relative;
+    width: $size;
+    height: $size;
+    background: $main-color;
+    cursor: pointer;
+
+    &-Side {
+        position: absolute;
+        width: $size;
+        height: $size;
+        opacity: 0.7;
+
+        &_back {
+            background: $back-color;
+            transform: translateZ($depth);
+        }
+
+        &_left {
+            background: $left-color;
+            transform: translateX($depth) rotateY(90deg);
+        }
+
+        &_right {
+            background: $right-color;
+            transform: translateX(-$depth) rotateY(90deg);
+        }
+
+        &_top {
+            background: $top-color;
+            transform: translateY($depth) rotateX(90deg);
+        }
+
+        &_bottom {
+            background: $bottom-color;
+            transform: translateY(-$depth) rotateX(90deg);
+        }
+
+        &_front {
+            background: $front-color;
+            transform: translateZ(-$depth);
+        }
+    }
+
+    &:hover {
+        background: darken($main-color, 30%);
+    }
+
+    &:hover .TimeUnit-Side {
+        cursor: pointer;
+        &_back {
+            background: darken($back-color, 30%);
+        }
+
+        &_left {
+            background: darken($left-color, 30%);
+        }
+
+        &_right {
+            background: darken($right-color, 30%);
+        }
+
+        &_top {
+            background: darken($top-color, 30%);
+        }
+
+        &_bottom {
+            background: darken($bottom-color, 30%);
+        }
+
+        &_front {
+            background: darken($front-color, 30%);
+        }
+    }
+
+    &_selected {
+        background: darken($main-color, 30%);
+    }
+}
+
+@media (max-width: $mobile) {
+    .TimeUnit {
+        width: $size-m;
+        height: $size-m;
+        &-Side {
+            width: $size-m;
+            height: $size-m;
+
+            &_back {
+                transform: translateZ($depth-m);
+            }
+    
+            &_left {
+                transform: translateX($depth-m) rotateY(90deg);
+            }
+    
+            &_right {
+                transform: translateX(-$depth-m) rotateY(90deg);
+            }
+    
+            &_top {
+                transform: translateY($depth-m) rotateX(90deg);
+            }
+    
+            &_bottom {
+                transform: translateY(-$depth-m) rotateX(90deg);
+            }
+    
+            &_front {
+                transform: translateZ(-$depth-m);
+            }
+        }
+    }
+}
