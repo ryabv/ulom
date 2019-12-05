@@ -133,6 +133,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 const val = Math.floor(i / unitsPerHour) + 1;
                 if (i % unitsPerHour === 0) {
                     timeUnits.push(<div 
+                        key={`hours-${i}`}
                         onClick={getActiveLine}
                         className={cnTimeline('Header', {hours: true, h: val})}>{val}</div>);
                 }
@@ -173,6 +174,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
             for (let i = 0; i <= unitsPerHour; i++) {
                 const val = i ? i * timeUnitValueInMins : '';
                 minutesLine.push(<div
+                    key={i}
                     onClick={getActiveLine}
                     className={cnTimeline('Header', {minutes: true, min: val})}>{val}</div>);
             }
