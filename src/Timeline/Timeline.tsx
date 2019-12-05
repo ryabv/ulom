@@ -27,29 +27,42 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         return false;
     };
 
-    const makeTimeUnitsUnselected = () => {
-        const selectedTimeUnits = document.getElementsByClassName('TimeUnit_selected');
+    // const makeTimeUnitsUnselected = () => {
+    //     const selectedTimeUnits = document.getElementsByClassName('TimeUnit_selected');
 
-        while (selectedTimeUnits.length) {
-            selectedTimeUnits[selectedTimeUnits.length - 1].classList.remove('TimeUnit_selected');
-        }
-    };
+    //     while (selectedTimeUnits.length) {
+    //         selectedTimeUnits[selectedTimeUnits.length - 1].classList.remove('TimeUnit_selected');
+    //     }
+    // };
 
     const handleMouseDown = (e: any) => {
         if (checkIsTimeUnit(e.target)) {
-            makeTimeUnitsUnselected();
             e.target.classList.add('TimeUnit_selected');
+            const currElId = Number((e.target as HTMLElement).getAttribute('id'));
             setIsMouseDowned(true);
-            setSelectedRange( {start: Number((e.target as HTMLElement).getAttribute('id')), end: 0} );
+            setSelectedRange( {start: currElId, end: currElId} );
         }
     };
 
     const handleMouseMove = (e: any) => {
         if (isMouseDowned) {
             if (checkIsTimeUnit(e.target)) {
-                setSelectedRange( { ...selectedRange, end: Number((e.target as HTMLElement).getAttribute('id'))} );
+                let endId = 0;
+                if (e.touches) {
+                    const currEl = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+                    if (currEl && checkIsTimeUnit(currEl)) {
+                        endId = Number(currEl.getAttribute('id'));
+                        setSelectedRange({ ...selectedRange, end: endId });
+                    }
+                } else {
+                    endId = Number((e.target as HTMLElement).getAttribute('id'));
+                    setSelectedRange({ ...selectedRange, end: endId });
+                }
+
+                
 
                 const timeUnits = document.getElementsByClassName('TimeUnit');
+
                 for (let i = 0; i < timeUnits.length; i++) {
                     const currTimeUnitId = Number(timeUnits[i].getAttribute('id'));
                     if (selectedRange.start <= selectedRange.end) {
@@ -173,6 +186,9 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
+            onTouchStart={handleMouseDown}
+            onTouchMove={handleMouseMove}
+            onTouchEnd={handleMouseUp}
             className={cnTimeline()}
         >
             {isDesktop ? makeHoursLine() : makeMinutesLine()}
