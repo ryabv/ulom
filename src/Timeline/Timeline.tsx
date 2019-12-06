@@ -122,7 +122,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
 
         if (isDesktop) {
             for (let i = 0; i < unitsPerDay; i++) {
-                const h = i % 24 + 1;
+                const h = i % 24;
                 const min = Math.floor(i / 24) * timeUnitValueInMins + timeUnitValueInMins;
                 const isOutdated = now.getHours() > h || (now.getHours() === h && now.getMinutes() > min);
 
@@ -144,7 +144,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
             }
         } else {
             for (let i = 0; i < unitsPerDay; i++) {
-                const h = Math.floor(i / unitsPerHour) + 1;
+                const h = Math.floor(i / unitsPerHour);
                 const min = i % unitsPerHour * timeUnitValueInMins + timeUnitValueInMins;
                 const isOutdated = now.getHours() > h || (now.getHours() === h && now.getMinutes() > min);
 
@@ -172,8 +172,8 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         const hoursLine = [];
 
         if (isDesktop) {
-            for (let i = 0; i <= 24; i++) {
-                const val = i ? i : '';
+            for (let i = -1; i <= 23; i++) {
+                const val = ~i ? i : '';
                 hoursLine.push(<div
                     key={i}
                     onClick={getActiveLine}
