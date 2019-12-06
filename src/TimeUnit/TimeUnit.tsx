@@ -7,15 +7,14 @@ const cnTimeUnit = cn('TimeUnit');
 interface TimeUnitProps {
     min: number,
     h: number,
-    id: number,
-    classes: string[]
+    id: number
 }
 
-const TimeUnit: FC<TimeUnitProps> = ({ min, h, id, classes }) => {
+const TimeUnit: FC<TimeUnitProps> = ({ min, h, id }) => {
     return (
         <div
             id={String(id)}
-            className={`${cnTimeUnit({ h, min })} ${[ ...classes ]}`}
+            className={cnTimeUnit({ h, min })}
         >
             {/* <div className={cnTimeUnit('Side', {'back': true})}></div>
             <div className={cnTimeUnit('Side', {'left': true})}></div>

@@ -8,6 +8,7 @@
     padding: 50px;
     box-sizing: border-box;
     transform-style: preserve-3d;
+    touch-action: none;
 
     &-Header {
         display: flex;
