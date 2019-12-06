@@ -15,6 +15,19 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
     const [ isDesktop, setIsDesktop ] = useState(document.body.clientWidth > 700);
     const [ isMouseDowned, setIsMouseDowned ] = useState(false);
     const [ selectedRange, setSelectedRange ] = useState({start: 0, end: 0});
+    const [ now, setNow ] = useState(new Date());
+
+    const timeToRedraw = () => {
+        const nextTimeToRedraw = Math.ceil(now.getMinutes() / timeUnitValueInMins) * timeUnitValueInMins;
+        const minsDiff = nextTimeToRedraw - now.getMinutes();
+        const minsToSecs = minsDiff * 60;
+        const secsDiff = minsToSecs - now.getSeconds();
+        return secsDiff;
+    };
+
+    setTimeout(() => {
+        setNow(new Date());
+    }, 1000 * timeToRedraw());
 
     window.addEventListener('resize', () => {
         setIsDesktop(document.body.clientWidth > 700);
@@ -42,17 +55,19 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         const t = e.target as HTMLElement;
 
         if (isMouseDowned) {
-            if (checkIsTimeUnit(t) && !t.classList.contains('TimeUnit_outdated')) {
+            if (checkIsTimeUnit(t)) {
                 let endId = 0;
                 if (e.nativeEvent instanceof TouchEvent) {
                     const currEl = document.elementFromPoint(e.nativeEvent.touches[0].clientX, e.nativeEvent.touches[0].clientY) as HTMLElement;
-                    if (currEl && checkIsTimeUnit(currEl)) {
+                    if (currEl && checkIsTimeUnit(currEl) && !currEl.classList.contains('TimeUnit_outdated')) {
                         endId = Number(currEl.getAttribute('id'));
                         setSelectedRange({ ...selectedRange, end: endId });
                     }
                 } else {
-                    endId = Number(t.getAttribute('id'));
-                    setSelectedRange({ ...selectedRange, end: endId });
+                    if (!t.classList.contains('TimeUnit_outdated')) {
+                        endId = Number(t.getAttribute('id'));
+                        setSelectedRange({ ...selectedRange, end: endId });
+                    }
                 }                
 
                 const timeUnits = document.getElementsByClassName('TimeUnit');
@@ -87,7 +102,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         const time = t.classList.value.match(/(_h_|_min_).+/);
 
         if (time) {
-            const currTimeUnits = document.getElementsByClassName(`TimeUnit${time[0]}`);
+            const currTimeUnits = document.querySelectorAll(`.TimeUnit${time[0]}:not(.TimeUnit_outdated)`);
             const currActiveTimeUnits = document.getElementsByClassName(`TimeUnit${time[0]} TimeUnit_selected`);
             
             if (currActiveTimeUnits.length === currTimeUnits.length) {
@@ -96,7 +111,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 }
             } else {
                 for (let i = 0; i < currTimeUnits.length; i++) {
-                    currTimeUnits[i].classList.add('TimeUnit_selected');
+                    currTimeUnits[i].classList.add('TimeUnit_selected');                    
                 }
             }
         }
@@ -104,7 +119,6 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
 
     const makeGrid = () => {
         const timeUnits = [];
-        const now = new Date();
 
         if (isDesktop) {
             for (let i = 0; i < unitsPerDay; i++) {
@@ -149,8 +163,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                     classes={isOutdated ? ['TimeUnit_outdated'] : []}
                 />);
             }
-        }
-        
+        }        
 
         return timeUnits;
     };

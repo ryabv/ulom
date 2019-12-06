@@ -84,6 +84,7 @@
     &_outdated {
         opacity: 0.4;
         cursor: default;
+        touch-action: auto;
     }
 }
 
