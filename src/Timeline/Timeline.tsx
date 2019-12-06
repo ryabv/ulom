@@ -124,7 +124,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
             for (let i = 0; i < unitsPerDay; i++) {
                 const h = i % 24;
                 const min = Math.floor(i / 24) * timeUnitValueInMins;
-                const isOutdated = now.getHours() > h || (now.getHours() === h && now.getMinutes() > min);
+                const isOutdated = now.getHours() > h || (now.getHours() === h && now.getMinutes() >= min + timeUnitValueInMins);
 
                 if (i % 24 === 0) {
                     timeUnits.push(<div
@@ -146,7 +146,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
             for (let i = 0; i < unitsPerDay; i++) {
                 const h = Math.floor(i / unitsPerHour);
                 const min = i % unitsPerHour * timeUnitValueInMins;
-                const isOutdated = now.getHours() > h || (now.getHours() === h && now.getMinutes() > min);
+                const isOutdated = now.getHours() > h || (now.getHours() === h && now.getMinutes() >= min + timeUnitValueInMins);
 
                 if (i % unitsPerHour === 0) {
                     timeUnits.push(<div 
