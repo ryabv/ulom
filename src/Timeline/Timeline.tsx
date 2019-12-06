@@ -38,7 +38,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
 
     const handleMouseMove = (e: any) => {
         if (isMouseDowned) {
-            if (checkIsTimeUnit(e.target)) {
+            if (checkIsTimeUnit(e.target) && !e.target.classList.contains('TimeUnit_outdated')) {
                 let endId = 0;
                 if (e.touches) {
                     const currEl = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);

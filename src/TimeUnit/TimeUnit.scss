@@ -47,7 +47,7 @@
     }
 
     &:not(.TimeUnit_outdated):hover {
-        background: darken($main-color, 30%);
+        background: darken($main-color, 20%);
     }
 
     &:hover .TimeUnit-Side {
@@ -78,11 +78,11 @@
     }
 
     &_selected {
-        background: darken($main-color, 30%);
+        background: darken($main-color, 20%);
     }
 
     &_outdated {
-        opacity: 0.5;
+        opacity: 0.4;
         cursor: default;
     }
 }
