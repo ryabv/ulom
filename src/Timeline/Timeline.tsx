@@ -114,7 +114,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 }
     
                 timeUnits.push(<TimeUnit
-                    id={i}
+                    id={i * unitsPerHour % unitsPerDay + Math.floor(i * unitsPerHour / unitsPerDay)}
                     h={i % 24 + 1}
                     min={val}
                     key={i} 
