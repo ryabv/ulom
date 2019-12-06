@@ -20,34 +20,38 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         setIsDesktop(document.body.clientWidth > 700);
     });
 
-    const checkIsTimeUnit = (el: any) => {
+    const checkIsTimeUnit = (el: HTMLElement) => {
         if (el.classList.contains('TimeUnit')) {
             return true;
         }
         return false;
     };
 
-    const handleMouseDown = (e: any) => {
-        if (checkIsTimeUnit(e.target) && !e.target.classList.contains('TimeUnit_outdated')) {
-            e.target.classList.add('TimeUnit_selected');
-            const currElId = Number((e.target as HTMLElement).getAttribute('id'));
+    const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
+        const t = e.target as HTMLElement;
+
+        if (checkIsTimeUnit(t) && !t.classList.contains('TimeUnit_outdated')) {
+            t.classList.add('TimeUnit_selected');
+            const currElId = Number(t.getAttribute('id'));
             setIsMouseDowned(true);
             setSelectedRange( {start: currElId, end: currElId} );
         }
     };
 
-    const handleMouseMove = (e: any) => {
+    const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
+        const t = e.target as HTMLElement;
+
         if (isMouseDowned) {
-            if (checkIsTimeUnit(e.target) && !e.target.classList.contains('TimeUnit_outdated')) {
+            if (checkIsTimeUnit(t) && !t.classList.contains('TimeUnit_outdated')) {
                 let endId = 0;
-                if (e.touches) {
-                    const currEl = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+                if (e.nativeEvent instanceof TouchEvent) {
+                    const currEl = document.elementFromPoint(e.nativeEvent.touches[0].clientX, e.nativeEvent.touches[0].clientY) as HTMLElement;
                     if (currEl && checkIsTimeUnit(currEl)) {
                         endId = Number(currEl.getAttribute('id'));
                         setSelectedRange({ ...selectedRange, end: endId });
                     }
                 } else {
-                    endId = Number((e.target as HTMLElement).getAttribute('id'));
+                    endId = Number(t.getAttribute('id'));
                     setSelectedRange({ ...selectedRange, end: endId });
                 }                
 
@@ -74,12 +78,13 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         }
     };
 
-    const handleMouseUp = (e: any) => {
+    const handleMouseUp = () => {
         setIsMouseDowned(false);
     };
 
-    const getActiveLine = (e: any) => {
-        const time = e.target.classList.value.match(/(_h_|_min_).+/);
+    const getActiveLine = (e: React.MouseEvent | React.TouchEvent) => {
+        const t = e.target as HTMLElement;
+        const time = t.classList.value.match(/(_h_|_min_).+/);
 
         if (time) {
             const currTimeUnits = document.getElementsByClassName(`TimeUnit${time[0]}`);
