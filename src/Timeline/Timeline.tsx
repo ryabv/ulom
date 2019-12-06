@@ -21,7 +21,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         const nextTimeToRedraw = Math.ceil(now.getMinutes() / timeUnitValueInMins) * timeUnitValueInMins;
         const minsDiff = nextTimeToRedraw - now.getMinutes();
         const minsToSecs = minsDiff * 60;
-        const secsDiff = minsToSecs - now.getSeconds();
+        const secsDiff = minsDiff ? minsToSecs - now.getSeconds() : timeUnitValueInMins * 60 - now.getSeconds();
         return secsDiff;
     };
 
