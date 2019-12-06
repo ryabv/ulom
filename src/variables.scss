@@ -3,6 +3,7 @@ $depth: $size / 2 * -1;
 
 // TimeUnit colors
 $main-color: lightgreen;
+$outdated-color: #bbb;
 
 $front-color: $main-color;
 $back-color: darken($main-color, 15%);

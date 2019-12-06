@@ -28,7 +28,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
     };
 
     const handleMouseDown = (e: any) => {
-        if (checkIsTimeUnit(e.target)) {
+        if (checkIsTimeUnit(e.target) && !e.target.classList.contains('TimeUnit_outdated')) {
             e.target.classList.add('TimeUnit_selected');
             const currElId = Number((e.target as HTMLElement).getAttribute('id'));
             setIsMouseDowned(true);
@@ -49,9 +49,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 } else {
                     endId = Number((e.target as HTMLElement).getAttribute('id'));
                     setSelectedRange({ ...selectedRange, end: endId });
-                }
-
-                
+                }                
 
                 const timeUnits = document.getElementsByClassName('TimeUnit');
 
@@ -101,40 +99,49 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
 
     const makeGrid = () => {
         const timeUnits = [];
+        const now = new Date();
 
         if (isDesktop) {
             for (let i = 0; i < unitsPerDay; i++) {
-                const val = Math.floor(i / 24) * timeUnitValueInMins + timeUnitValueInMins;
+                const h = i % 24 + 1;
+                const min = Math.floor(i / 24) * timeUnitValueInMins + timeUnitValueInMins;
+                const isOutdated = now.getHours() > h || (now.getHours() === h && now.getMinutes() > min);
+
                 if (i % 24 === 0) {
                     timeUnits.push(<div
                         key={`time-${i}`}
                         onClick={getActiveLine}
-                        className={cnTimeline('Header', {minutes: true, min: val})}
-                    >{val}</div>);
+                        className={cnTimeline('Header', {minutes: true, min: min})}
+                    >{min}</div>);
                 }
     
                 timeUnits.push(<TimeUnit
                     id={i * unitsPerHour % unitsPerDay + Math.floor(i * unitsPerHour / unitsPerDay)}
-                    h={i % 24 + 1}
-                    min={val}
-                    key={i} 
+                    h={h}
+                    min={min}
+                    key={i}
+                    classes={isOutdated ? ['TimeUnit_outdated'] : []}
                 />);
             }
         } else {
             for (let i = 0; i < unitsPerDay; i++) {
-                const val = Math.floor(i / unitsPerHour) + 1;
+                const h = Math.floor(i / unitsPerHour) + 1;
+                const min = i % unitsPerHour * timeUnitValueInMins + timeUnitValueInMins;
+                const isOutdated = now.getHours() > h || (now.getHours() === h && now.getMinutes() > min);
+
                 if (i % unitsPerHour === 0) {
                     timeUnits.push(<div 
                         key={`hours-${i}`}
                         onClick={getActiveLine}
-                        className={cnTimeline('Header', {hours: true, h: val})}>{val}</div>);
+                        className={cnTimeline('Header', {hours: true, h: h})}>{h}</div>);
                 }
     
                 timeUnits.push(<TimeUnit 
                     id={i}
-                    h={val}
-                    min={i % unitsPerHour * timeUnitValueInMins + timeUnitValueInMins}
-                    key={i} 
+                    h={h}
+                    min={min}
+                    key={i}
+                    classes={isOutdated ? ['TimeUnit_outdated'] : []}
                 />);
             }
         }

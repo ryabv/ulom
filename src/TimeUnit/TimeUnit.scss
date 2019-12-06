@@ -46,7 +46,7 @@
         }
     }
 
-    &:hover {
+    &:not(.TimeUnit_outdated):hover {
         background: darken($main-color, 30%);
     }
 
@@ -79,6 +79,11 @@
 
     &_selected {
         background: darken($main-color, 30%);
+    }
+
+    &_outdated {
+        opacity: 0.5;
+        cursor: default;
     }
 }
 
