@@ -87,7 +87,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                         endId = Number(t.getAttribute('id'));
                         setSelectedRange({ ...selectedRange, end: endId });
                     }
-                }                
+                }
 
                 const timeUnits = document.getElementsByClassName('TimeUnit');
 
@@ -109,16 +109,42 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                     
                 }
             } else if (checkIsTimelineHours(t)) {
-                const time = t.classList.value.match(/(_h_).+/);
-                const currTimeUnits = document.querySelectorAll(`.TimeUnit${time ? time[0] : 'nothing'}:not(.TimeUnit_outdated)`);
-                let currId = Number(currTimeUnits[currTimeUnits.length - 1].getAttribute('id'));
-                
-                if (currId >= selectedRange.end) {
-                    setSelectedRange({ ...selectedRange, end: currId });
+                // const time = t.classList.value.match(/(_h_).+/);
+                // const currTimeUnits = document.querySelectorAll(`.TimeUnit${time ? time[0] : 'nothing'}:not(.TimeUnit_outdated)`);
+                let currId;
+
+
+                if (e.nativeEvent instanceof TouchEvent) {
+                    const currEl = document.elementFromPoint(e.nativeEvent.touches[0].clientX, e.nativeEvent.touches[0].clientY) as HTMLElement;
+                    if (currEl && checkIsTimelineHours(currEl)) {
+                        const time = currEl.classList.value.match(/(_h_).+/);
+                        const currTimeUnits = document.querySelectorAll(`.TimeUnit${time ? time[0]: 'nothing'}:not(.TimeUnit_outdated)`);
+                        if (time && currTimeUnits.length) {
+                            currId = Number(currTimeUnits[currTimeUnits.length - 1].getAttribute('id'));
+                            if (currId >= selectedRange.end) {
+                                setSelectedRange({ ...selectedRange, end: currId });
+                            } else {
+                                currId = Number(currTimeUnits[0].getAttribute('id'));
+                                setSelectedRange({ ...selectedRange, start: currId });
+                            }
+                        }
+                    }
                 } else {
-                    currId = Number(currTimeUnits[0].getAttribute('id'));
-                    setSelectedRange({ ...selectedRange, start: currId });
+                    const time = t.classList.value.match(/(_h_).+/);
+                    const currTimeUnits = document.querySelectorAll(`.TimeUnit${time ? time[0]: 'nothing'}:not(.TimeUnit_outdated)`);
+                    if (time && currTimeUnits.length) {
+                        currId = Number(currTimeUnits[currTimeUnits.length - 1].getAttribute('id'));
+                        if (currId >= selectedRange.end) {
+                            setSelectedRange({ ...selectedRange, end: currId });
+                        } else {
+                            currId = Number(currTimeUnits[0].getAttribute('id'));
+                            setSelectedRange({ ...selectedRange, start: currId });
+                        }
+                    }
                 }
+
+
+                
 
                 const timeUnits = document.getElementsByClassName('TimeUnit');
 

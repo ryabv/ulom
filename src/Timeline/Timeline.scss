@@ -17,6 +17,10 @@
         user-select: none;
         font-size: $size * 0.7;
 
+        &_hours {
+            touch-action: none;
+        }
+
         &_minutes {
             position: relative;
             top: -100%;
