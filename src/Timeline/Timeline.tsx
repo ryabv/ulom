@@ -16,6 +16,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
     const [ isMouseDowned, setIsMouseDowned ] = useState(false);
     const [ selectedRange, setSelectedRange ] = useState({start: 0, end: 0});
     const [ now, setNow ] = useState(new Date());
+    const [ selectedHours, setSelectedHours ] = useState({start: 0, end: 0});
 
     const timeToRedraw = () => {
         const nextTimeToRedraw = Math.ceil(now.getMinutes() / timeUnitValueInMins) * timeUnitValueInMins;
@@ -58,15 +59,16 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         } else if (checkIsTimelineHours(t)) {
             setIsMouseDowned(true);
             const time = t.classList.value.match(/(_h_).+/);
-            const currTimeUnits = document.querySelectorAll(`.TimeUnit${time ? time[0] : 'nothing'}:not(.TimeUnit_outdated)`);
-
+            const timeValue = time ? time[0].match(/\d+/) : '';
+            const currTimeUnits = document.querySelectorAll(`.TimeUnit_h_${timeValue ? timeValue[0] : 'nothing'}:not(.TimeUnit_outdated)`);
+            
             for (let i = 0; i < currTimeUnits.length; i++) {
                 currTimeUnits[i].classList.add('TimeUnit_selected');
             }
-
-            const startId = Number(currTimeUnits[0].getAttribute('id'));
-            const endId = Number(currTimeUnits[currTimeUnits.length - 1].getAttribute('id'));
-            setSelectedRange( {start: startId, end: endId} );
+            
+            if (timeValue) {
+                setSelectedHours({ start: Number(timeValue[0]), end: Number(timeValue[0]) });
+            }
         }
     };
 
@@ -109,60 +111,43 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                     
                 }
             } else if (checkIsTimelineHours(t)) {
-                // const time = t.classList.value.match(/(_h_).+/);
-                // const currTimeUnits = document.querySelectorAll(`.TimeUnit${time ? time[0] : 'nothing'}:not(.TimeUnit_outdated)`);
-                let currId;
-
-
+                let time;
                 if (e.nativeEvent instanceof TouchEvent) {
                     const currEl = document.elementFromPoint(e.nativeEvent.touches[0].clientX, e.nativeEvent.touches[0].clientY) as HTMLElement;
-                    if (currEl && checkIsTimelineHours(currEl)) {
-                        const time = currEl.classList.value.match(/(_h_).+/);
-                        const currTimeUnits = document.querySelectorAll(`.TimeUnit${time ? time[0]: 'nothing'}:not(.TimeUnit_outdated)`);
-                        if (time && currTimeUnits.length) {
-                            currId = Number(currTimeUnits[currTimeUnits.length - 1].getAttribute('id'));
-                            if (currId >= selectedRange.end) {
-                                setSelectedRange({ ...selectedRange, end: currId });
-                            } else {
-                                currId = Number(currTimeUnits[0].getAttribute('id'));
-                                setSelectedRange({ ...selectedRange, start: currId });
-                            }
-                        }
-                    }
+                    time = currEl.classList.value.match(/(_h_).+/);
                 } else {
-                    const time = t.classList.value.match(/(_h_).+/);
-                    const currTimeUnits = document.querySelectorAll(`.TimeUnit${time ? time[0]: 'nothing'}:not(.TimeUnit_outdated)`);
-                    if (time && currTimeUnits.length) {
-                        currId = Number(currTimeUnits[currTimeUnits.length - 1].getAttribute('id'));
-                        if (currId >= selectedRange.end) {
-                            setSelectedRange({ ...selectedRange, end: currId });
-                        } else {
-                            currId = Number(currTimeUnits[0].getAttribute('id'));
-                            setSelectedRange({ ...selectedRange, start: currId });
-                        }
-                    }
+                    time = t.classList.value.match(/(_h_).+/);
+                }
+                
+                const timeValue = time ? time[0].match(/\d+/) : '';
+                
+                if (timeValue) {
+                    setSelectedHours({ ...selectedHours, end: Number(timeValue[0]) });
                 }
 
+                const classesWithActiveHours = [];
+                let start, end;
+                if (selectedHours.start < selectedHours.end) {
+                    start = selectedHours.start;
+                    end = selectedHours.end;
+                } else {
+                    start = selectedHours.end;
+                    end = selectedHours.start;
+                }
 
-                
+                for (let i = start; i <= end; i++) {
+                    classesWithActiveHours.push(`TimeUnit_h_${i}`);
+                }
 
-                const timeUnits = document.getElementsByClassName('TimeUnit');
+                const timeUnitsWithActiveHours = classesWithActiveHours.join('|');
+                const searchString = new RegExp(timeUnitsWithActiveHours);
+                const timeUnits = document.querySelectorAll('.TimeUnit:not(.TimeUnit_outdated)');
 
                 for (let i = 0; i < timeUnits.length; i++) {
-                    const currTimeUnitId = Number(timeUnits[i].getAttribute('id'));
-                    timeUnits[i].classList.add('TimeUnit_selected');
-                    if (selectedRange.start <= selectedRange.end) {
-                        if (currTimeUnitId >= selectedRange.start && currTimeUnitId <= selectedRange.end) {
-                            timeUnits[i].classList.add('TimeUnit_selected');
-                        } else {
-                            timeUnits[i].classList.remove('TimeUnit_selected');
-                        }
+                    if (~timeUnits[i].classList.value.search(searchString)) {
+                        timeUnits[i].classList.add('TimeUnit_selected');
                     } else {
-                        if (currTimeUnitId >= selectedRange.end && currTimeUnitId <= selectedRange.start) {
-                            timeUnits[i].classList.add('TimeUnit_selected');
-                        } else {
-                            timeUnits[i].classList.remove('TimeUnit_selected');
-                        }
+                        timeUnits[i].classList.remove('TimeUnit_selected');
                     }
                 }
             }
@@ -171,26 +156,6 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
 
     const handleMouseUp = () => {
         setIsMouseDowned(false);
-    };
-
-    const getActiveLine = (e: React.MouseEvent | React.TouchEvent) => {
-        // const t = e.target as HTMLElement;
-        // const time = t.classList.value.match(/(_h_).+/);
-
-        // if (time) {
-        //     const currTimeUnits = document.querySelectorAll(`.TimeUnit${time[0]}:not(.TimeUnit_outdated)`);
-        //     const currActiveTimeUnits = document.getElementsByClassName(`TimeUnit${time[0]} TimeUnit_selected`);
-            
-        //     if (currActiveTimeUnits.length === currTimeUnits.length) {
-        //         for (let i = 0; i < currTimeUnits.length; i++) {
-        //             currTimeUnits[i].classList.toggle('TimeUnit_selected');
-        //         }
-        //     } else {
-        //         for (let i = 0; i < currTimeUnits.length; i++) {
-        //             currTimeUnits[i].classList.add('TimeUnit_selected');                    
-        //         }
-        //     }
-        // }
     };
 
     const makeGrid = () => {
@@ -205,7 +170,6 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 if (i % 24 === 0) {
                     timeUnits.push(<div
                         key={`time-${i}`}
-                        onClick={getActiveLine}
                         className={cnTimeline('Header', {minutes: true, min: min})}
                     >{min ? min : ''}</div>);
                 }
@@ -227,7 +191,6 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 if (i % unitsPerHour === 0) {
                     timeUnits.push(<div 
                         key={`hours-${i}`}
-                        onClick={getActiveLine}
                         className={cnTimeline('Header', {hours: true, h: h})}>{h}</div>);
                 }
     
@@ -252,7 +215,6 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 const val = ~i ? i : '';
                 hoursLine.push(<div
                     key={i}
-                    onClick={getActiveLine}
                     className={cnTimeline('Header', {hours: true, h: val})}>{val}</div>);
             }
         }
@@ -268,7 +230,6 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 const val = ~i ? i * timeUnitValueInMins : '';
                 minutesLine.push(<div
                     key={i}
-                    onClick={getActiveLine}
                     className={cnTimeline('Header', {minutes: true, min: val})}>{val ? val : ''}</div>);
             }
         }
