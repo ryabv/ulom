@@ -40,6 +40,13 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         return false;
     };
 
+    const checkIsTimelineHours = (el: HTMLElement) => {
+        if (el.classList.contains('Timeline-Header_hours')) {
+            return true;
+        }
+        return false;
+    };
+
     const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
         const t = e.target as HTMLElement;
 
@@ -48,6 +55,18 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
             const currElId = Number(t.getAttribute('id'));
             setIsMouseDowned(true);
             setSelectedRange( {start: currElId, end: currElId} );
+        } else if (checkIsTimelineHours(t)) {
+            setIsMouseDowned(true);
+            const time = t.classList.value.match(/(_h_).+/);
+            const currTimeUnits = document.querySelectorAll(`.TimeUnit${time ? time[0] : 'nothing'}:not(.TimeUnit_outdated)`);
+
+            for (let i = 0; i < currTimeUnits.length; i++) {
+                currTimeUnits[i].classList.add('TimeUnit_selected');
+            }
+
+            const startId = Number(currTimeUnits[0].getAttribute('id'));
+            const endId = Number(currTimeUnits[currTimeUnits.length - 1].getAttribute('id'));
+            setSelectedRange( {start: startId, end: endId} );
         }
     };
 
@@ -89,6 +108,37 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                     }
                     
                 }
+            } else if (checkIsTimelineHours(t)) {
+                const time = t.classList.value.match(/(_h_).+/);
+                const currTimeUnits = document.querySelectorAll(`.TimeUnit${time ? time[0] : 'nothing'}:not(.TimeUnit_outdated)`);
+                let currId = Number(currTimeUnits[currTimeUnits.length - 1].getAttribute('id'));
+                
+                if (currId >= selectedRange.end) {
+                    setSelectedRange({ ...selectedRange, end: currId });
+                } else {
+                    currId = Number(currTimeUnits[0].getAttribute('id'));
+                    setSelectedRange({ ...selectedRange, start: currId });
+                }
+
+                const timeUnits = document.getElementsByClassName('TimeUnit');
+
+                for (let i = 0; i < timeUnits.length; i++) {
+                    const currTimeUnitId = Number(timeUnits[i].getAttribute('id'));
+                    timeUnits[i].classList.add('TimeUnit_selected');
+                    if (selectedRange.start <= selectedRange.end) {
+                        if (currTimeUnitId >= selectedRange.start && currTimeUnitId <= selectedRange.end) {
+                            timeUnits[i].classList.add('TimeUnit_selected');
+                        } else {
+                            timeUnits[i].classList.remove('TimeUnit_selected');
+                        }
+                    } else {
+                        if (currTimeUnitId >= selectedRange.end && currTimeUnitId <= selectedRange.start) {
+                            timeUnits[i].classList.add('TimeUnit_selected');
+                        } else {
+                            timeUnits[i].classList.remove('TimeUnit_selected');
+                        }
+                    }
+                }
             }
         }
     };
@@ -98,23 +148,23 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
     };
 
     const getActiveLine = (e: React.MouseEvent | React.TouchEvent) => {
-        const t = e.target as HTMLElement;
-        const time = t.classList.value.match(/(_h_).+/);
+        // const t = e.target as HTMLElement;
+        // const time = t.classList.value.match(/(_h_).+/);
 
-        if (time) {
-            const currTimeUnits = document.querySelectorAll(`.TimeUnit${time[0]}:not(.TimeUnit_outdated)`);
-            const currActiveTimeUnits = document.getElementsByClassName(`TimeUnit${time[0]} TimeUnit_selected`);
+        // if (time) {
+        //     const currTimeUnits = document.querySelectorAll(`.TimeUnit${time[0]}:not(.TimeUnit_outdated)`);
+        //     const currActiveTimeUnits = document.getElementsByClassName(`TimeUnit${time[0]} TimeUnit_selected`);
             
-            if (currActiveTimeUnits.length === currTimeUnits.length) {
-                for (let i = 0; i < currTimeUnits.length; i++) {
-                    currTimeUnits[i].classList.toggle('TimeUnit_selected');
-                }
-            } else {
-                for (let i = 0; i < currTimeUnits.length; i++) {
-                    currTimeUnits[i].classList.add('TimeUnit_selected');                    
-                }
-            }
-        }
+        //     if (currActiveTimeUnits.length === currTimeUnits.length) {
+        //         for (let i = 0; i < currTimeUnits.length; i++) {
+        //             currTimeUnits[i].classList.toggle('TimeUnit_selected');
+        //         }
+        //     } else {
+        //         for (let i = 0; i < currTimeUnits.length; i++) {
+        //             currTimeUnits[i].classList.add('TimeUnit_selected');                    
+        //         }
+        //     }
+        // }
     };
 
     const makeGrid = () => {
