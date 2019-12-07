@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/ulom/static/css/main.2e8d86b7.chunk.css",
-    "main.js": "/ulom/static/js/main.c8e8871e.chunk.js",
-    "main.js.map": "/ulom/static/js/main.c8e8871e.chunk.js.map",
+    "main.css": "/ulom/static/css/main.32e731cf.chunk.css",
+    "main.js": "/ulom/static/js/main.05e06651.chunk.js",
+    "main.js.map": "/ulom/static/js/main.05e06651.chunk.js.map",
     "runtime-main.js": "/ulom/static/js/runtime-main.fb17d799.js",
     "runtime-main.js.map": "/ulom/static/js/runtime-main.fb17d799.js.map",
     "static/js/2.d52f0670.chunk.js": "/ulom/static/js/2.d52f0670.chunk.js",
     "static/js/2.d52f0670.chunk.js.map": "/ulom/static/js/2.d52f0670.chunk.js.map",
     "index.html": "/ulom/index.html",
-    "precache-manifest.d1216e61a26227e162f3f9d1c76e8e12.js": "/ulom/precache-manifest.d1216e61a26227e162f3f9d1c76e8e12.js",
+    "precache-manifest.9600d40b8aff4aad072f325d7523b35e.js": "/ulom/precache-manifest.9600d40b8aff4aad072f325d7523b35e.js",
     "service-worker.js": "/ulom/service-worker.js",
-    "static/css/main.2e8d86b7.chunk.css.map": "/ulom/static/css/main.2e8d86b7.chunk.css.map",
+    "static/css/main.32e731cf.chunk.css.map": "/ulom/static/css/main.32e731cf.chunk.css.map",
     "static/media/logo.svg": "/ulom/static/media/logo.6ffa9a4a.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.fb17d799.js",
     "static/js/2.d52f0670.chunk.js",
-    "static/css/main.2e8d86b7.chunk.css",
-    "static/js/main.c8e8871e.chunk.js"
+    "static/css/main.32e731cf.chunk.css",
+    "static/js/main.05e06651.chunk.js"
   ]
 }
