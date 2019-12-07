@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react';
 import './Timeline.scss';
 import TimeUnit from '../TimeUnit/TimeUnit'
+import ShortcutMenu from '../ShortcutMenu/ShortcutMenu';
 import { cn } from '@bem-react/classname';
 
 const cnTimeline = cn('Timeline');
@@ -17,6 +18,9 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
     const [ selectedRange, setSelectedRange ] = useState({start: 0, end: 0});
     const [ now, setNow ] = useState(new Date());
     const [ selectedHours, setSelectedHours ] = useState({start: 0, end: 0});
+    const [ showShortcutMenu, setShowShortcutMenu ] = useState(false);
+    const [ coordsForShortcutMenu, setCordsForShortcutMenu ] = useState({x: 0, y: 0});
+    const [ coordsForTouch, setCoordsForTouch ] = useState({x: 0, y: 0});
 
     const timeToRedraw = () => {
         const nextTimeToRedraw = Math.ceil(now.getMinutes() / timeUnitValueInMins) * timeUnitValueInMins;
@@ -49,6 +53,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
     };
 
     const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
+        setShowShortcutMenu(false);
         const t = e.target as HTMLElement;
 
         if (checkIsTimeUnit(t) && !t.classList.contains('TimeUnit_outdated')) {
@@ -84,6 +89,8 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                         endId = Number(currEl.getAttribute('id'));
                         setSelectedRange({ ...selectedRange, end: endId });
                     }
+
+                    setCoordsForTouch({ x: e.nativeEvent.touches[0].clientX, y: e.nativeEvent.touches[0].clientY });
                 } else {
                     if (!t.classList.contains('TimeUnit_outdated')) {
                         endId = Number(t.getAttribute('id'));
@@ -154,8 +161,25 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         }
     };
 
-    const handleMouseUp = () => {
+    const handleMouseUp = (e: React.MouseEvent | React.TouchEvent) => {
         setIsMouseDowned(false);
+        const activeTimeUnits = document.getElementsByClassName('TimeUnit_selected');
+        if (activeTimeUnits.length) {
+            setShowShortcutMenu(true);
+
+            const timeline = document.getElementsByClassName('Timeline')[0];
+            if (e.nativeEvent instanceof TouchEvent) {
+                const x = coordsForTouch.x - timeline.getBoundingClientRect().left;
+                const y = coordsForTouch.y - timeline.getBoundingClientRect().top;
+                setCordsForShortcutMenu({x, y});
+            } else {
+                const x = e.nativeEvent.pageX - timeline.getBoundingClientRect().left;
+                const y = e.nativeEvent.pageY - timeline.getBoundingClientRect().top;
+                setCordsForShortcutMenu({x, y});
+            }
+        } else {
+            setShowShortcutMenu(false);
+        }
     };
 
     const makeGrid = () => {
@@ -249,6 +273,11 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         >
             {isDesktop ? makeHoursLine() : makeMinutesLine()}
             {makeGrid()}
+            <ShortcutMenu 
+                visible={showShortcutMenu} 
+                x={coordsForShortcutMenu.x} 
+                y={coordsForShortcutMenu.y} 
+            />
         </div>
     );
 };

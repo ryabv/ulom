@@ -1,0 +1,15 @@
+.ShortcutMenu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateX(-50%) translateY(-110%);
+    display: none;
+    width: 100px;
+    height: 40px;
+    background-color: #333;
+    border-radius: 4px;
+
+    &_visible {
+        display: block;
+    }
+}

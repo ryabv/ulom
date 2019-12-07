@@ -4,6 +4,8 @@ import './Main.scss';
 const Main: FC = ({children}) => {
     const makeTimeUnitsUnselected = () => {
         const selectedTimeUnits = document.getElementsByClassName('TimeUnit_selected');
+        const shortcutMenu = document.getElementsByClassName('ShortcutMenu')[0];
+        shortcutMenu.classList.remove('ShortcutMenu_visible');
 
         while (selectedTimeUnits.length) {
             selectedTimeUnits[selectedTimeUnits.length - 1].classList.remove('TimeUnit_selected');
