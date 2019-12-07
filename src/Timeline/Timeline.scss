@@ -5,7 +5,7 @@
     grid-template-columns: repeat(25, $size);
     grid-template-rows: repeat(12, $size);
     grid-gap: $size;
-    padding: 50px;
+    padding: 50px 10px;
     box-sizing: border-box;
     transform-style: preserve-3d;
 
@@ -13,12 +13,12 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
         user-select: none;
         font-size: $size * 0.7;
 
         &_hours {
             touch-action: none;
+            cursor: pointer;
         }
 
         &_minutes {
