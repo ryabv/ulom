@@ -99,7 +99,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
 
     const getActiveLine = (e: React.MouseEvent | React.TouchEvent) => {
         const t = e.target as HTMLElement;
-        const time = t.classList.value.match(/(_h_|_min_).+/);
+        const time = t.classList.value.match(/(_h_).+/);
 
         if (time) {
             const currTimeUnits = document.querySelectorAll(`.TimeUnit${time[0]}:not(.TimeUnit_outdated)`);
@@ -131,7 +131,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                         key={`time-${i}`}
                         onClick={getActiveLine}
                         className={cnTimeline('Header', {minutes: true, min: min})}
-                    >{min}</div>);
+                    >{min ? min : ''}</div>);
                 }
     
                 timeUnits.push(<TimeUnit
@@ -193,7 +193,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 minutesLine.push(<div
                     key={i}
                     onClick={getActiveLine}
-                    className={cnTimeline('Header', {minutes: true, min: val})}>{val}</div>);
+                    className={cnTimeline('Header', {minutes: true, min: val})}>{val ? val : ''}</div>);
             }
         }
 
