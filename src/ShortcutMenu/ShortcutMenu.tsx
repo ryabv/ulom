@@ -22,7 +22,10 @@ const ShortcutMenu: FC<ShortcutMenuProps> = ({ visible, x, y, isMobile }) => {
             className={visible ? cnShortcutMenu({ visible: true }) : cnShortcutMenu()}
             style={style}
         >
-
+            <div className={cnShortcutMenu('Color', { work: true })}></div>
+            <div className={cnShortcutMenu('Color', { rest: true })}></div>
+            <div className={cnShortcutMenu('Color', { gym: true })}></div>
+            <div className={cnShortcutMenu('Color', { sleep: true })}></div>
         </div>
     );
 };

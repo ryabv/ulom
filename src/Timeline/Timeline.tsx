@@ -52,16 +52,24 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         return false;
     };
 
+    const checkIsShortcutMenu = (el: HTMLElement) => {
+        if (~el.classList.value.search('ShortcutMenu')) {
+            return true;
+        }
+        return false;
+    };
+
     const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
-        setShowShortcutMenu(false);
         const t = e.target as HTMLElement;
 
         if (checkIsTimeUnit(t) && !t.classList.contains('TimeUnit_outdated')) {
+            setShowShortcutMenu(false);
             t.classList.add('TimeUnit_selected');
             const currElId = Number(t.getAttribute('id'));
             setIsMouseDowned(true);
             setSelectedRange( {start: currElId, end: currElId} );
         } else if (checkIsTimelineHours(t)) {
+            setShowShortcutMenu(false);
             setIsMouseDowned(true);
             const time = t.classList.value.match(/(_h_).+/);
             const timeValue = time ? time[0].match(/\d+/) : '';
@@ -165,17 +173,21 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         setIsMouseDowned(false);
         const activeTimeUnits = document.getElementsByClassName('TimeUnit_selected');
         if (activeTimeUnits.length) {
-            setShowShortcutMenu(true);
-
             const timeline = document.getElementsByClassName('Timeline')[0];
             if (e.nativeEvent instanceof TouchEvent) {
-                const x = coordsForTouch.x - timeline.getBoundingClientRect().left;
-                const y = activeTimeUnits[0].getBoundingClientRect().top - timeline.getBoundingClientRect().top;
-                setCordsForShortcutMenu({x, y});
+                if (!checkIsShortcutMenu(e.nativeEvent.touches[0].target as HTMLElement)) {
+                    const x = coordsForTouch.x - timeline.getBoundingClientRect().left;
+                    const y = activeTimeUnits[0].getBoundingClientRect().top - timeline.getBoundingClientRect().top;
+                    setCordsForShortcutMenu({x, y});
+                    setShowShortcutMenu(true);
+                }
             } else {
-                const x = e.nativeEvent.pageX - timeline.getBoundingClientRect().left;
-                const y = e.nativeEvent.pageY - timeline.getBoundingClientRect().top;
-                setCordsForShortcutMenu({x, y});
+                if (!checkIsShortcutMenu(e.nativeEvent.target as HTMLElement)) {
+                    const x = Math.round(e.nativeEvent.pageX - timeline.getBoundingClientRect().left);
+                    const y = Math.round(e.nativeEvent.pageY - timeline.getBoundingClientRect().top);
+                    setCordsForShortcutMenu({x, y});
+                    setShowShortcutMenu(true);
+                }
             }
         } else {
             setShowShortcutMenu(false);
