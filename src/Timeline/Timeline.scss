@@ -31,12 +31,18 @@
 
 @media (max-width: $mobile) {
     .Timeline {
-        grid-template-columns: repeat(13, $size-m);
+        grid-template-columns: ($size-m * 2) repeat(12, $size-m);
         grid-template-rows: repeat(24, $size-m);
         grid-gap: $size-m / 1.5;
+        margin-left: -$size-m;
         padding: 20px 0;
         &-Header {
             font-size: $size-m * 0.7;
+
+            &_hours {
+                justify-content: flex-end;
+                padding-right: 4px;
+            }
 
             &_minutes {
                 position: relative;
