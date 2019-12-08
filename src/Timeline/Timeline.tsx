@@ -170,8 +170,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
             const timeline = document.getElementsByClassName('Timeline')[0];
             if (e.nativeEvent instanceof TouchEvent) {
                 const x = coordsForTouch.x - timeline.getBoundingClientRect().left;
-                const y = activeTimeUnits[0].getBoundingClientRect().top;
-                console.log(coordsForTouch.y, activeTimeUnits[0].getBoundingClientRect().top);
+                const y = activeTimeUnits[0].getBoundingClientRect().top - timeline.getBoundingClientRect().top;
                 setCordsForShortcutMenu({x, y});
             } else {
                 const x = e.nativeEvent.pageX - timeline.getBoundingClientRect().left;
@@ -198,7 +197,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                         className={cnTimeline('Header', {minutes: true, min: min})}
                     >{min ? min : ''}</div>);
                 }
-    
+
                 timeUnits.push(<TimeUnit
                     id={i * unitsPerHour % unitsPerDay + Math.floor(i * unitsPerHour / unitsPerDay)}
                     h={h}
