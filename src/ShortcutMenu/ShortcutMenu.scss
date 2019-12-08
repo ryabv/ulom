@@ -46,11 +46,11 @@
 }
 
 @media (max-width: $mobile) {
-    $coef: 1.2;
+    $coef: 0.6;
     .ShortcutMenu {
-        transform: translateX(-27%) translateY(-150%);
+        transform: translateX(-40%) translateY(-150%);
         min-height: $size-m / $coef;
-        padding: $size-m / 2 $size-m / 1.5;
+        padding: $size-m / 2 $size-m;
         grid-template-columns: repeat(4, $size-m / $coef);
         grid-gap: $size-m;
 
