@@ -40,8 +40,27 @@
             font-size: $size-m * 0.7;
 
             &_hours {
+                position: relative;
                 justify-content: flex-end;
                 padding-right: 4px;
+
+                // Необходимы для лучшего UX при навигации на тачах
+                &::before,
+                &::after {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    width: 100%;
+                    height: $size-m / 3;
+                }
+
+                &::before {
+                    top: -$size-m / 3;
+                }
+
+                &::after {
+                    bottom: -$size-m / 3;
+                }
             }
 
             &_minutes {
