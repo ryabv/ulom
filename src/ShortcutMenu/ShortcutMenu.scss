@@ -28,34 +28,35 @@
         border-radius: 50%;
 
         &_work {
-            background: maroon;
+            background: $work;
         }
 
         &_rest {
-            background: yellowgreen;
+            background: $rest;
         }
 
         &_sleep {
-            background: mediumturquoise;
+            background: $sleep;
         }
 
         &_gym {
-            background: teal;
+            background: $gym;
         }
     }
 }
 
 @media (max-width: $mobile) {
+    $coef: 1.2;
     .ShortcutMenu {
         transform: translateX(-27%) translateY(-150%);
-        min-height: $size-m / 1.4;
+        min-height: $size-m / $coef;
         padding: $size-m / 2 $size-m / 1.5;
-        grid-template-columns: repeat(4, $size-m / 1.4);
-        grid-gap: $size-m / 2;
+        grid-template-columns: repeat(4, $size-m / $coef);
+        grid-gap: $size-m;
 
         &-Color {
-            width: $size-m / 1.4;
-            height: $size-m / 1.4;
+            width: $size-m / $coef;
+            height: $size-m / $coef;
         }
     }
 }

@@ -81,6 +81,24 @@
         background: darken($main-color, 20%);
     }
 
+    &_case {
+        &_work {
+            background: $work;
+        }
+    
+        &_rest {
+            background: $rest;
+        }
+    
+        &_sleep {
+            background: $sleep;
+        }
+    
+        &_gym {
+            background: $gym;
+        }
+    }
+
     &_outdated {
         opacity: 0.4;
         cursor: default;

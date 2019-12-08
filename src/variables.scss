@@ -5,6 +5,11 @@ $depth: $size / 2 * -1;
 $main-color: rgb(58, 233, 58);
 $outdated-color: #bbb;
 
+$work: maroon;
+$rest: yellowgreen;
+$gym: teal;
+$sleep: mediumturquoise;
+
 $front-color: $main-color;
 $back-color: darken($main-color, 15%);
 $left-color: darken($main-color, 10%);

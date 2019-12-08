@@ -59,6 +59,13 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         return false;
     };
 
+    const checkIsShortcutMenuItem = (el: HTMLElement) => {
+        if (~el.classList.value.search('ShortcutMenu-Color')) {
+            return true;
+        }
+        return false;
+    };
+
     const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
         const t = e.target as HTMLElement;
 
@@ -81,6 +88,16 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
             
             if (timeValue) {
                 setSelectedHours({ start: Number(timeValue[0]), end: Number(timeValue[0]) });
+            }
+        } else if (checkIsShortcutMenuItem(t)) {
+            const colorClass = t.classList.value.match(/ShortcutMenu-Color_\w+/);
+            const activeTimeUnits = document.getElementsByClassName('TimeUnit_selected');
+            if (colorClass && activeTimeUnits.length) {
+                const color = colorClass[0].match(/_\w+/);
+                for (let i = 0; i < activeTimeUnits.length; i++) {
+                    activeTimeUnits[i].classList.value = activeTimeUnits[i].classList.value.replace(/TimeUnit_case_\w+/g, '');
+                    activeTimeUnits[i].classList.add(`TimeUnit_case${color}`);
+                }
             }
         }
     };
@@ -175,12 +192,10 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         if (activeTimeUnits.length) {
             const timeline = document.getElementsByClassName('Timeline')[0];
             if (e.nativeEvent instanceof TouchEvent) {
-                if (!checkIsShortcutMenu(e.nativeEvent.touches[0].target as HTMLElement)) {
-                    const x = coordsForTouch.x - timeline.getBoundingClientRect().left;
-                    const y = activeTimeUnits[0].getBoundingClientRect().top - timeline.getBoundingClientRect().top;
-                    setCordsForShortcutMenu({x, y});
-                    setShowShortcutMenu(true);
-                }
+                const x = coordsForTouch.x - timeline.getBoundingClientRect().left;
+                const y = activeTimeUnits[0].getBoundingClientRect().top - timeline.getBoundingClientRect().top;
+                setCordsForShortcutMenu({x, y});
+                setShowShortcutMenu(true);
             } else {
                 if (!checkIsShortcutMenu(e.nativeEvent.target as HTMLElement)) {
                     const x = Math.round(e.nativeEvent.pageX - timeline.getBoundingClientRect().left);
