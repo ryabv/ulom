@@ -7,12 +7,13 @@ const cnShortcutMenu = cn('ShortcutMenu');
 interface ShortcutMenuProps {
     visible: boolean,
     x: number,
-    y: number
+    y: number,
+    isMobile: boolean
 }
 
-const ShortcutMenu: FC<ShortcutMenuProps> = ({ visible, x, y }) => {
+const ShortcutMenu: FC<ShortcutMenuProps> = ({ visible, x, y, isMobile }) => {
     const style = {
-        left: `${x}px`,
+        left: isMobile ? '50%' : `${x}px`,
         top: `${y}px`,
     };
 

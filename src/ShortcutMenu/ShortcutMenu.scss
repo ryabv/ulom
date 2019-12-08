@@ -1,3 +1,5 @@
+@import '../variables.scss';
+
 .ShortcutMenu {
     position: absolute;
     top: 0;
@@ -11,5 +13,11 @@
 
     &_visible {
         display: block;
+    }
+}
+
+@media (max-width: $mobile) {
+    .ShortcutMenu {
+        transform: translateX(-38%) translateY(-150%);
     }
 }

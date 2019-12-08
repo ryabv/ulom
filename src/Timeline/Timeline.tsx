@@ -89,7 +89,6 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                         endId = Number(currEl.getAttribute('id'));
                         setSelectedRange({ ...selectedRange, end: endId });
                     }
-
                     setCoordsForTouch({ x: e.nativeEvent.touches[0].clientX, y: e.nativeEvent.touches[0].clientY });
                 } else {
                     if (!t.classList.contains('TimeUnit_outdated')) {
@@ -122,6 +121,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 if (e.nativeEvent instanceof TouchEvent) {
                     const currEl = document.elementFromPoint(e.nativeEvent.touches[0].clientX, e.nativeEvent.touches[0].clientY) as HTMLElement;
                     time = currEl.classList.value.match(/(_h_).+/);
+                    setCoordsForTouch({ x: e.nativeEvent.touches[0].clientX, y: e.nativeEvent.touches[0].clientY });
                 } else {
                     time = t.classList.value.match(/(_h_).+/);
                 }
@@ -170,7 +170,8 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
             const timeline = document.getElementsByClassName('Timeline')[0];
             if (e.nativeEvent instanceof TouchEvent) {
                 const x = coordsForTouch.x - timeline.getBoundingClientRect().left;
-                const y = coordsForTouch.y - timeline.getBoundingClientRect().top;
+                const y = activeTimeUnits[0].getBoundingClientRect().top;
+                console.log(coordsForTouch.y, activeTimeUnits[0].getBoundingClientRect().top);
                 setCordsForShortcutMenu({x, y});
             } else {
                 const x = e.nativeEvent.pageX - timeline.getBoundingClientRect().left;
@@ -274,6 +275,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
             {isDesktop ? makeHoursLine() : makeMinutesLine()}
             {makeGrid()}
             <ShortcutMenu 
+                isMobile={!isDesktop}
                 visible={showShortcutMenu} 
                 x={coordsForShortcutMenu.x} 
                 y={coordsForShortcutMenu.y} 
