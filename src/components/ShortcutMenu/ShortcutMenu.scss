@@ -1,0 +1,62 @@
+@import '../../variables.scss';
+
+.ShortcutMenu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateX(-50%) translateY(-110%);
+    display: none;
+    grid-template-columns: repeat(4, $size / 1.4);
+    grid-gap: $size / 2;
+    min-width: $size / 1.4;
+    min-height: $size / 1.4;
+    padding: $size / 2 $size / 1.5;
+    background-color: #fff;
+    border-radius: 500px;
+    box-shadow: rgba(0,0,0,.12) 0 3px 13px 1px;
+
+    &_visible {
+        display: grid;
+    }
+
+    &-Color {
+        width: $size / 1.4;
+        height: $size / 1.4;
+        cursor: pointer;
+        box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
+        box-sizing: border-box;
+        border-radius: 50%;
+
+        &_work {
+            background: $work;
+        }
+
+        &_rest {
+            background: $rest;
+        }
+
+        &_sleep {
+            background: $sleep;
+        }
+
+        &_gym {
+            background: $gym;
+        }
+    }
+}
+
+@media (max-width: $mobile) {
+    $coef: 0.6;
+    .ShortcutMenu {
+        transform: translateX(-40%) translateY(-150%);
+        min-height: $size-m / $coef;
+        padding: $size-m / 2 $size-m;
+        grid-template-columns: repeat(4, $size-m / $coef);
+        grid-gap: $size-m;
+
+        &-Color {
+            width: $size-m / $coef;
+            height: $size-m / $coef;
+        }
+    }
+}

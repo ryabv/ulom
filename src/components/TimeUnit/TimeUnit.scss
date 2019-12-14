@@ -1,4 +1,4 @@
-@import '../variables.scss';
+@import '../../variables.scss';
 
 .TimeUnit {
     position: relative;
@@ -79,6 +79,24 @@
 
     &_selected {
         background: darken($main-color, 20%);
+    }
+
+    &_case {
+        &_work {
+            background: $work;
+        }
+    
+        &_rest {
+            background: $rest;
+        }
+    
+        &_sleep {
+            background: $sleep;
+        }
+    
+        &_gym {
+            background: $gym;
+        }
     }
 
     &_outdated {
