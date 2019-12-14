@@ -2,9 +2,10 @@
 
 .Timeline {
     display: grid;
-    grid-template-columns: repeat(25, $size);
-    grid-template-rows: repeat(12, $size);
+    grid-template-columns: repeat(24, $size);
+    grid-template-rows: repeat(13, $size);
     grid-gap: $size;
+    grid-auto-flow: column;
     padding: 10px;
     box-sizing: border-box;
     transform-style: preserve-3d;
@@ -34,6 +35,7 @@
         grid-template-columns: ($size-m * 2) repeat(12, $size-m);
         grid-template-rows: repeat(24, $size-m);
         grid-gap: $size-m / 1.5;
+        grid-auto-flow: row;
         margin-left: -$size-m;
         padding: 20px 0;
         &-Header {

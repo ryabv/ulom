@@ -15,7 +15,7 @@ const TimeUnit: FC<TimeUnitProps> = ({ min, h, id, classes }) => {
     return (
         <div
             id={String(id)}
-            className={`${cnTimeUnit({ h, min })} ${[ ...classes ]}`}
+            className={`${cnTimeUnit({ h: `${h}_`, min })} ${[ ...classes ]}`}
         >
             {/* <div className={cnTimeUnit('Side', {'back': true})}></div>
             <div className={cnTimeUnit('Side', {'left': true})}></div>

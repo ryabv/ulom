@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import './Timeline.scss';
 import TimeUnit from '../TimeUnit/TimeUnit'
 import ShortcutMenu from '../ShortcutMenu/ShortcutMenu';
@@ -21,6 +21,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
     const [ showShortcutMenu, setShowShortcutMenu ] = useState(false);
     const [ coordsForShortcutMenu, setCordsForShortcutMenu ] = useState({x: 0, y: 0});
     const [ coordsForTouch, setCoordsForTouch ] = useState({x: 0, y: 0});
+    const [ TimeUn, setTimeUn ] = useState([]);
 
     const timeToRedraw = () => {
         const nextTimeToRedraw = Math.ceil(now.getMinutes() / timeUnitValueInMins) * timeUnitValueInMins;
@@ -80,7 +81,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
             setIsMouseDowned(true);
             const time = t.classList.value.match(/(_h_).+/);
             const timeValue = time ? time[0].match(/\d+/) : '';
-            const currTimeUnits = document.querySelectorAll(`.TimeUnit_h_${timeValue ? timeValue[0] : 'nothing'}:not(.TimeUnit_outdated)`);
+            const currTimeUnits = document.querySelectorAll(`.TimeUnit_h_${timeValue ? timeValue[0] : 'nothing'}_:not(.TimeUnit_outdated)`);
             
             for (let i = 0; i < currTimeUnits.length; i++) {
                 currTimeUnits[i].classList.add('TimeUnit_selected');
@@ -152,13 +153,14 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 }
                 
                 const timeValue = time ? time[0].match(/\d+/) : '';
-                
+
                 if (timeValue) {
                     setSelectedHours({ ...selectedHours, end: Number(timeValue[0]) });
                 }
 
                 const classesWithActiveHours = [];
                 let start, end;
+
                 if (selectedHours.start < selectedHours.end) {
                     start = selectedHours.start;
                     end = selectedHours.end;
@@ -168,13 +170,12 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 }
 
                 for (let i = start; i <= end; i++) {
-                    classesWithActiveHours.push(`TimeUnit_h_${i}`);
+                    classesWithActiveHours.push(`TimeUnit_h_${i}_`);
                 }
 
                 const timeUnitsWithActiveHours = classesWithActiveHours.join('|');
                 const searchString = new RegExp(timeUnitsWithActiveHours);
                 const timeUnits = document.querySelectorAll('.TimeUnit:not(.TimeUnit_outdated)');
-
                 for (let i = 0; i < timeUnits.length; i++) {
                     if (~timeUnits[i].classList.value.search(searchString)) {
                         timeUnits[i].classList.add('TimeUnit_selected');
@@ -209,80 +210,50 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         }
     };
 
-    const makeGrid = () => {
-        const timeUnits = [];
 
-        if (isDesktop) {
-            for (let i = 0; i < unitsPerDay; i++) {
-                const h = i % 24;
-                const min = Math.floor(i / 24) * timeUnitValueInMins;
-                const isOutdated = now.getHours() > h || (now.getHours() === h && now.getMinutes() >= min + timeUnitValueInMins);
+    useEffect(
+        () => {
+            const timeUnits: any = [];
 
-                if (i % 24 === 0) {
-                    timeUnits.push(<div
-                        key={`time-${i}`}
-                        className={cnTimeline('Header', {minutes: true, min: min})}
-                    >{min ? min : ''}</div>);
+            fetch('http://localhost:3001?user=username&date=2019-12-15')
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                for(let id in data.time_units) {
+                    let unit = data.time_units[id];
+
+                    if (new Date(unit.time).getMinutes() === 0) {
+                        timeUnits.push(<div
+                            key={`time-${unit.id}`}
+                            className={cnTimeline('Header', {hours: true, h: new Date(unit.time).getHours()})}
+                        >{new Date(unit.time).getHours()}</div>);
+                    }
+
+                    const isOutdated = now > new Date(unit.time);
+                    timeUnits.push(<TimeUnit
+                        id={unit.id}
+                        h={new Date(unit.time).getHours()}
+                        min={new Date(unit.time).getMinutes()}
+                        key={id}
+                        classes={isOutdated ? ['TimeUnit_outdated'] : []}
+                    />);
                 }
-
-                timeUnits.push(<TimeUnit
-                    id={i * unitsPerHour % unitsPerDay + Math.floor(i * unitsPerHour / unitsPerDay)}
-                    h={h}
-                    min={min}
-                    key={i}
-                    classes={isOutdated ? ['TimeUnit_outdated'] : []}
-                />);
-            }
-        } else {
-            for (let i = 0; i < unitsPerDay; i++) {
-                const h = Math.floor(i / unitsPerHour);
-                const min = i % unitsPerHour * timeUnitValueInMins;
-                const isOutdated = now.getHours() > h || (now.getHours() === h && now.getMinutes() >= min + timeUnitValueInMins);
-
-                if (i % unitsPerHour === 0) {
-                    timeUnits.push(<div 
-                        key={`hours-${i}`}
-                        className={cnTimeline('Header', {hours: true, h: h})}>{h}</div>);
-                }
+            })
+            .then(() => {
+                setTimeUn(timeUnits);
+            });
+        }, [now]
+    );
     
-                timeUnits.push(<TimeUnit 
-                    id={i}
-                    h={h}
-                    min={min}
-                    key={i}
-                    classes={isOutdated ? ['TimeUnit_outdated'] : []}
-                />);
-            }
-        }        
-
-        return timeUnits;
-    };
-
-    const makeHoursLine = () => {
-        const hoursLine = [];
-
-        if (isDesktop) {
-            for (let i = -1; i <= 23; i++) {
-                const val = ~i ? i : '';
-                hoursLine.push(<div
-                    key={i}
-                    className={cnTimeline('Header', {hours: true, h: val})}>{val}</div>);
-            }
-        }
-
-        return hoursLine;
-    };
-
     const makeMinutesLine = () => {
         const minutesLine = [];
 
-        if (!isDesktop) {
-            for (let i = -1; i < unitsPerHour; i++) {
-                const val = ~i ? i * timeUnitValueInMins : '';
-                minutesLine.push(<div
-                    key={i}
-                    className={cnTimeline('Header', {minutes: true, min: val})}>{val ? val : ''}</div>);
-            }
+        for (let i = -1; i < unitsPerHour; i++) {
+            const val = ~i ? i * timeUnitValueInMins : '';
+            minutesLine.push(<div
+                key={i}
+                className={cnTimeline('Header', {minutes: true, min: val})}>{val ? val : ''}</div>);
         }
 
         return minutesLine;
@@ -298,8 +269,8 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
             onTouchEnd={handleMouseUp}
             className={cnTimeline()}
         >
-            {isDesktop ? makeHoursLine() : makeMinutesLine()}
-            {makeGrid()}
+            {makeMinutesLine()}
+            {TimeUn}
             <ShortcutMenu 
                 isMobile={!isDesktop}
                 visible={showShortcutMenu} 
