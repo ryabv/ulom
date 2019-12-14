@@ -20,8 +20,8 @@
         },
         {
             "id": 4,
-            "name": "sport",
-            "color": "mediumturquoise"
+            "name": "sleep",
+            "color": "#48d1cc"
         }
     ],
     "cases": [

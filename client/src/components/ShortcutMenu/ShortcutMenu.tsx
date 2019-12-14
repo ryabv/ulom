@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { cn } from '@bem-react/classname';
 import './ShortcutMenu.scss';
 
@@ -12,20 +12,53 @@ interface ShortcutMenuProps {
 }
 
 const ShortcutMenu: FC<ShortcutMenuProps> = ({ visible, x, y, isMobile }) => {
+    const [categories, setCategories] = useState([]);
     const style = {
         left: isMobile ? '50%' : `${x}px`,
         top: `${y}px`,
     };
+
+    useEffect(
+        () => {
+            const cats: any = [];
+
+            fetch('http://localhost:3001?user=username&date=2019-12-15')
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                data.cases_categories.forEach((cat: any) => {
+                    cats.push(
+                        <div
+                            key={cat.id}
+                            id={`cat-${cat.id}`}
+                            style={{background: cat.color}}
+                            className={cnShortcutMenu('Color', { [cat.name]: true })}>
+                        </div>
+                    );
+                });
+
+                cats.push(
+                    <div
+                        key={0}
+                        id={'cat-0'}
+                        style={{background: ''}}
+                        className={cnShortcutMenu('Color', { default: true })}>
+                    </div>
+                );
+            })
+            .then(() => {
+                setCategories(cats);
+            });
+        }, []
+    );
 
     return (
         <div 
             className={visible ? cnShortcutMenu({ visible: true }) : cnShortcutMenu()}
             style={style}
         >
-            <div className={cnShortcutMenu('Color', { work: true })}></div>
-            <div className={cnShortcutMenu('Color', { rest: true })}></div>
-            <div className={cnShortcutMenu('Color', { gym: true })}></div>
-            <div className={cnShortcutMenu('Color', { sleep: true })}></div>
+            {categories}
         </div>
     );
 };
