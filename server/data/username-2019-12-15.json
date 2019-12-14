@@ -2,28 +2,28 @@
     "settings": {
         "step_in_mins": 5
     },
-    "cases_categories": [
-        {
+    "cases_categories": {
+        "1": {
             "id": 1,
             "name": "work",
             "color": "maroon"
         },
-        {
+        "2": {
             "id": 2,
             "name": "rest",
             "color": "yellowgreen"
         },
-        {
+        "3": {
             "id": 3,
             "name": "gym",
             "color": "teal"
         },
-        {
+        "4": {
             "id": 4,
             "name": "sleep",
             "color": "#48d1cc"
         }
-    ],
+    },
     "cases": [
         {
             "id": 1,

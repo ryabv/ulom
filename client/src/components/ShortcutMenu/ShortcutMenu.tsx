@@ -27,7 +27,9 @@ const ShortcutMenu: FC<ShortcutMenuProps> = ({ visible, x, y, isMobile }) => {
                 return res.json();
             })
             .then(data => {
-                data.cases_categories.forEach((cat: any) => {
+
+                for(let id in data.cases_categories) {
+                    const cat = data.cases_categories[id];
                     cats.push(
                         <div
                             key={cat.id}
@@ -36,7 +38,7 @@ const ShortcutMenu: FC<ShortcutMenuProps> = ({ visible, x, y, isMobile }) => {
                             className={cnShortcutMenu('Color', { [cat.name]: true })}>
                         </div>
                     );
-                });
+                }
 
                 cats.push(
                     <div
