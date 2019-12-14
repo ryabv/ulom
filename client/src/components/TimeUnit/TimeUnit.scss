@@ -78,7 +78,7 @@
     }
 
     &_selected {
-        background: darken($main-color, 20%);
+        filter: brightness(50%);
     }
 
     &_case {

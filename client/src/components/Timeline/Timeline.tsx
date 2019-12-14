@@ -12,7 +12,6 @@ interface TimelineProps {
 
 const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
     const unitsPerHour = 60 / timeUnitValueInMins;
-    const unitsPerDay = 24 * unitsPerHour;
     const [ isDesktop, setIsDesktop ] = useState(document.body.clientWidth > 700);
     const [ isMouseDowned, setIsMouseDowned ] = useState(false);
     const [ selectedRange, setSelectedRange ] = useState({start: 0, end: 0});
@@ -97,7 +96,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 const color = colorClass[0].match(/_\w+/);
                 for (let i = 0; i < activeTimeUnits.length; i++) {
                     activeTimeUnits[i].classList.value = activeTimeUnits[i].classList.value.replace(/TimeUnit_case_\w+/g, '');
-                    activeTimeUnits[i].classList.add(`TimeUnit_case${color}`);
+                    activeTimeUnits[i].classList.add(`TimeUnit_cat${color}`);
                 }
             }
         }
@@ -231,13 +230,34 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                     }
 
                     const isOutdated = now > new Date(unit.time);
-                    timeUnits.push(<TimeUnit
-                        id={unit.id}
-                        h={new Date(unit.time).getHours()}
-                        min={new Date(unit.time).getMinutes()}
-                        key={id}
-                        classes={isOutdated ? ['TimeUnit_outdated'] : []}
-                    />);
+
+                    const extraClasses = [
+                        `TimeUnit_case_${unit.case_id}`,
+                        `TimeUnit_cat_${unit.cat_id}`
+                    ];
+
+                    if (isOutdated) {
+                        extraClasses.push('TimeUnit_outdated');
+                    }
+                    if (unit.cat_id) {
+                        timeUnits.push(<TimeUnit
+                            id={unit.id}
+                            color={data.cases_categories[unit.cat_id].color}
+                            h={new Date(unit.time).getHours()}
+                            min={new Date(unit.time).getMinutes()}
+                            key={id}
+                            classes={extraClasses}
+                        />);
+                    } else {
+                        timeUnits.push(<TimeUnit
+                            id={unit.id}
+                            h={new Date(unit.time).getHours()}
+                            min={new Date(unit.time).getMinutes()}
+                            key={id}
+                            classes={extraClasses}
+                        />);
+                    }
+                    
                 }
             })
             .then(() => {
