@@ -104,12 +104,11 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins, info, updateInfo }) 
                     const tuId = Number(activeTimeUnits[i].getAttribute('id'));
                     if (tuId) {
                         info.time_units[tuId - 1].cat_id = info.cases_categories[+catId[0]].id;
-                        updateInfo(info);
                     } else {
                         console.error('Не получилось перезаписать');
                     }
-                    
                 }
+                updateInfo(info);
             }
         }
     };
