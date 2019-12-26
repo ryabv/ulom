@@ -22,7 +22,7 @@ const ShortcutMenu: FC<ShortcutMenuProps> = ({ visible, x, y, isMobile }) => {
         () => {
             const cats: any = [];
 
-            fetch('http://localhost:3001?user=username&date=2019-12-15')
+            fetch('http://localhost:3001?user=username&date=2019-12-26')
             .then(res => {
                 return res.json();
             })

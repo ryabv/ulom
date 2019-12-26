@@ -1,16 +1,20 @@
 import React, { FC, useState, useEffect } from 'react';
 import './Timeline.scss';
+import { getFullDataAsync } from '../../store/fullData/fullData.actions';
 import TimeUnit from '../TimeUnit/TimeUnit'
 import ShortcutMenu from '../ShortcutMenu/ShortcutMenu';
 import { cn } from '@bem-react/classname';
+import { connect } from 'react-redux';
 
 const cnTimeline = cn('Timeline');
 
 interface TimelineProps {
-    timeUnitValueInMins: number
+    timeUnitValueInMins: number,
+    info: any
 }
 
-const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
+const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins, info }) => {
+    console.log('TL', info);
     const unitsPerHour = 60 / timeUnitValueInMins;
     const [ isDesktop, setIsDesktop ] = useState(document.body.clientWidth > 700);
     const [ isMouseDowned, setIsMouseDowned ] = useState(false);
@@ -210,62 +214,55 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
     };
 
 
-    useEffect(
-        () => {
+    function drawScheme() {
+        if (info) {
             const timeUnits: any = [];
 
-            fetch('http://localhost:3001?user=username&date=2019-12-15')
-            .then(res => {
-                return res.json();
-            })
-            .then(data => {
-                for(let id in data.time_units) {
-                    let unit = data.time_units[id];
+            for(let id in info.time_units) {
+                let unit = info.time_units[id];
 
-                    if (new Date(unit.time).getMinutes() === 0) {
-                        timeUnits.push(<div
-                            key={`time-${unit.id}`}
-                            className={cnTimeline('Header', {hours: true, h: new Date(unit.time).getHours()})}
-                        >{new Date(unit.time).getHours()}</div>);
-                    }
-
-                    const isOutdated = now > new Date(unit.time);
-
-                    const extraClasses = [
-                        `TimeUnit_case_${unit.case_id}`,
-                        `TimeUnit_cat_${unit.cat_id}`
-                    ];
-
-                    if (isOutdated) {
-                        extraClasses.push('TimeUnit_outdated');
-                    }
-                    if (unit.cat_id) {
-                        timeUnits.push(<TimeUnit
-                            id={unit.id}
-                            color={data.cases_categories[unit.cat_id].color}
-                            h={new Date(unit.time).getHours()}
-                            min={new Date(unit.time).getMinutes()}
-                            key={id}
-                            classes={extraClasses}
-                        />);
-                    } else {
-                        timeUnits.push(<TimeUnit
-                            id={unit.id}
-                            h={new Date(unit.time).getHours()}
-                            min={new Date(unit.time).getMinutes()}
-                            key={id}
-                            classes={extraClasses}
-                        />);
-                    }
-                    
+                if (new Date(unit.time).getMinutes() === 0) {
+                    timeUnits.push(<div
+                        key={`time-${unit.id}`}
+                        className={cnTimeline('Header', {hours: true, h: new Date(unit.time).getHours()})}
+                    >{new Date(unit.time).getHours()}</div>);
                 }
-            })
-            .then(() => {
-                setTimeUn(timeUnits);
-            });
-        }, [now]
-    );
-    
+
+                const isOutdated = now > new Date(unit.time);
+
+                const extraClasses = [
+                    `TimeUnit_case_${unit.case_id}`,
+                    `TimeUnit_cat_${unit.cat_id}`
+                ];
+
+                if (isOutdated) {
+                    extraClasses.push('TimeUnit_outdated');
+                }
+                if (unit.cat_id) {
+                    timeUnits.push(<TimeUnit
+                        id={unit.id}
+                        color={info.cases_categories[unit.cat_id].color}
+                        h={new Date(unit.time).getHours()}
+                        min={new Date(unit.time).getMinutes()}
+                        key={id}
+                        classes={extraClasses}
+                    />);
+                } else {
+                    timeUnits.push(<TimeUnit
+                        id={unit.id}
+                        h={new Date(unit.time).getHours()}
+                        min={new Date(unit.time).getMinutes()}
+                        key={id}
+                        classes={extraClasses}
+                    />);
+                }
+            }
+
+            return timeUnits;
+        }
+    }
+
+
     const makeMinutesLine = () => {
         const minutesLine = [];
 
@@ -290,7 +287,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
             className={cnTimeline()}
         >
             {makeMinutesLine()}
-            {TimeUn}
+            {drawScheme()}
             <ShortcutMenu 
                 isMobile={!isDesktop}
                 visible={showShortcutMenu} 
