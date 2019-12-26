@@ -1,7 +1,12 @@
-export const GET_FULL_DATA_SUCCESS = 'GET_FULL_DATA_SUCCESS';
-export const GET_FULL_DATA_FAILURE = 'GET_FULL_DATA_FAILURE';
+import { Dispatch } from 'redux';
+import { 
+    GET_FULL_DATA_SUCCESS, 
+    GET_FULL_DATA_FAILURE,
+    FullData
+} from './fullData.types';
 
-export const getFullDataSuccess = (data) => ({
+
+export const getFullDataSuccess = (data: Promise<FullData>) => ({
     type: GET_FULL_DATA_SUCCESS,
     payload: data
 });
@@ -11,7 +16,7 @@ export const getFullDataFailure = () => ({
 });
 
 export const getFullDataAsync = () => {
-    return (dispatch) => {
+    return (dispatch: Dispatch) => {
         fetch('http://localhost:3001?user=username&date=2019-12-26')
             .then(res => {
                 if (res.status === 200) {

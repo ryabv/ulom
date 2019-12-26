@@ -15,7 +15,8 @@ const TimelineContainer: FC<TimelineContainerProps> = ({ getFullDataAsync, info 
     useEffect(
         () => getFullDataAsync(),
         []
-    )
+    );
+
     if (info) {
         info.then((res: any) => {
             setData(res);

@@ -218,8 +218,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins, info }) => {
         if (info) {
             const timeUnits: any = [];
 
-            for(let id in info.time_units) {
-                let unit = info.time_units[id];
+            for(let unit of info.time_units) {
 
                 if (new Date(unit.time).getMinutes() === 0) {
                     timeUnits.push(<div
@@ -244,7 +243,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins, info }) => {
                         color={info.cases_categories[unit.cat_id].color}
                         h={new Date(unit.time).getHours()}
                         min={new Date(unit.time).getMinutes()}
-                        key={id}
+                        key={unit.id}
                         classes={extraClasses}
                     />);
                 } else {
@@ -252,7 +251,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins, info }) => {
                         id={unit.id}
                         h={new Date(unit.time).getHours()}
                         min={new Date(unit.time).getMinutes()}
-                        key={id}
+                        key={unit.id}
                         classes={extraClasses}
                     />);
                 }
@@ -293,7 +292,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins, info }) => {
                 visible={showShortcutMenu} 
                 x={coordsForShortcutMenu.x} 
                 y={coordsForShortcutMenu.y}
-                casesCategories={info ? info.cases_categories : {}}
+                casesCategories={info ? info.cases_categories : []}
             />
         </div>
     );

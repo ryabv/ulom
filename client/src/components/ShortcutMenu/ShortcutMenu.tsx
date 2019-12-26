@@ -22,8 +22,7 @@ const ShortcutMenu: FC<ShortcutMenuProps> = ({ visible, x, y, isMobile, casesCat
         if (casesCategories) {
             const cats = [];
 
-            for(let id in casesCategories) {
-                const cat = casesCategories[id];
+            for(let cat of casesCategories) {
                 cats.push(
                     <div
                         key={cat.id}
