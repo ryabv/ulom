@@ -1,14 +1,16 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const bodyParser = require("body-parser");
 
+const JSONParser = bodyParser.json();
 const app = express();
 const port = 3001;
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    res.header("Access-Control-Allow-Methods", "GET");
+    res.header("Access-Control-Allow-Methods", "GET, PUT");
     next();
 });
 
@@ -24,5 +26,15 @@ app.get('/', (req, res) => {
         } else {
             res.sendFile(filePath);
         }
-    })
+    });
+});
+
+app.put('/', JSONParser, (req, res) => {
+    const filePath = path.join(__dirname, `./data/test.json`);
+    const data = JSON.stringify(req.body);
+    fs.writeFile(filePath, data, err => {
+        if (err) throw err;
+        console.log('Saved!');
+    });
+    res.end();
 });
