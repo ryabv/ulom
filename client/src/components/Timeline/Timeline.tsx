@@ -292,7 +292,8 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins, info }) => {
                 isMobile={!isDesktop}
                 visible={showShortcutMenu} 
                 x={coordsForShortcutMenu.x} 
-                y={coordsForShortcutMenu.y} 
+                y={coordsForShortcutMenu.y}
+                casesCategories={info ? info.cases_categories : {}}
             />
         </div>
     );
