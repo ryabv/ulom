@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import './TimeUnit.scss';
 import { cn } from '@bem-react/classname';
 
-const cnTimeUnit = cn('TimeUnit');
+export const cnTimeUnit = cn('TimeUnit');
 
 interface TimeUnitProps {
     min: number,

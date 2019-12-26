@@ -1,16 +1,15 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState } from 'react';
 import './Timeline.scss';
-import { getFullDataAsync } from '../../store/fullData/fullData.actions';
 import TimeUnit from '../TimeUnit/TimeUnit'
 import ShortcutMenu from '../ShortcutMenu/ShortcutMenu';
 import { cn } from '@bem-react/classname';
-import { connect } from 'react-redux';
+import { FullData } from '../../store/fullData/fullData.types';
 
 const cnTimeline = cn('Timeline');
 
 interface TimelineProps {
     timeUnitValueInMins: number,
-    info: any
+    info: FullData
 }
 
 const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins, info }) => {
@@ -24,7 +23,6 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins, info }) => {
     const [ showShortcutMenu, setShowShortcutMenu ] = useState(false);
     const [ coordsForShortcutMenu, setCordsForShortcutMenu ] = useState({x: 0, y: 0});
     const [ coordsForTouch, setCoordsForTouch ] = useState({x: 0, y: 0});
-    const [ TimeUn, setTimeUn ] = useState([]);
 
     const timeToRedraw = () => {
         const nextTimeToRedraw = Math.ceil(now.getMinutes() / timeUnitValueInMins) * timeUnitValueInMins;
@@ -94,13 +92,14 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins, info }) => {
                 setSelectedHours({ start: Number(timeValue[0]), end: Number(timeValue[0]) });
             }
         } else if (checkIsShortcutMenuItem(t)) {
-            const colorClass = t.classList.value.match(/ShortcutMenu-Color_\w+/);
-            const activeTimeUnits = document.getElementsByClassName('TimeUnit_selected');
-            if (colorClass && activeTimeUnits.length) {
-                const color = colorClass[0].match(/_\w+/);
+            const idAttribute = t.getAttribute('id') || '0';
+            const catId = idAttribute.match(/\d+/);
+            const activeTimeUnits = document.getElementsByClassName('TimeUnit_selected') as unknown as HTMLElement[];
+
+            if (catId && catId[0] && activeTimeUnits.length) {
                 for (let i = 0; i < activeTimeUnits.length; i++) {
-                    activeTimeUnits[i].classList.value = activeTimeUnits[i].classList.value.replace(/TimeUnit_case_\w+/g, '');
-                    activeTimeUnits[i].classList.add(`TimeUnit_cat${color}`);
+                    activeTimeUnits[i].style.backgroundColor = info.cases_categories[+catId[0]].color;
+                    activeTimeUnits[i].classList.add(`TimeUnit_cat_${catId}`);
                 }
             }
         }

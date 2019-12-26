@@ -23,14 +23,16 @@ const ShortcutMenu: FC<ShortcutMenuProps> = ({ visible, x, y, isMobile, casesCat
             const cats = [];
 
             for(let cat of casesCategories) {
-                cats.push(
-                    <div
-                        key={cat.id}
-                        id={`cat-${cat.id}`}
-                        style={{background: cat.color}}
-                        className={cnShortcutMenu('Color', { [cat.name]: true })}>
-                    </div>
-                );
+                if (cat.id !== 0) {
+                    cats.push(
+                        <div
+                            key={cat.id}
+                            id={`cat-${cat.id}`}
+                            style={{background: cat.color}}
+                            className={cnShortcutMenu('Color', { [cat.name]: true })}>
+                        </div>
+                    );
+                }
             }
 
             cats.push(
@@ -47,7 +49,7 @@ const ShortcutMenu: FC<ShortcutMenuProps> = ({ visible, x, y, isMobile, casesCat
     }
 
     return (
-        <div 
+        <div
             className={visible ? cnShortcutMenu({ visible: true }) : cnShortcutMenu()}
             style={style}
         >
