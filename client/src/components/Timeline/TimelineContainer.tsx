@@ -1,14 +1,16 @@
 import React, { FC, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import Timeline from '../Timeline/Timeline';
-import { getFullDataAsync } from '../../store/fullData/fullData.actions';
+import { getFullDataAsync, putFullDataAsync } from '../../store/fullData/fullData.actions';
+import { FullData } from '../../store/fullData/fullData.types';
 
 interface TimelineContainerProps {
     info: any,
-    getFullDataAsync: () => void
+    getFullDataAsync: () => void,
+    putFullDataAsync: (info: FullData) => void
 }
 
-const TimelineContainer: FC<TimelineContainerProps> = ({ getFullDataAsync, info }) => {
+const TimelineContainer: FC<TimelineContainerProps> = ({ getFullDataAsync, putFullDataAsync, info }) => {
     let [data, setData] = useState(info);
 
 
@@ -23,7 +25,7 @@ const TimelineContainer: FC<TimelineContainerProps> = ({ getFullDataAsync, info 
         });
     }
     
-    return <Timeline timeUnitValueInMins={5} info={data} />;
+    return <Timeline timeUnitValueInMins={5} info={data} updateInfo={putFullDataAsync} />;
 };
 
 const mapStateToProps = (state: any) => {
@@ -34,7 +36,8 @@ const mapStateToProps = (state: any) => {
 
 const mapDispatchToProps = (dispatch: any) => {
     return {
-        getFullDataAsync: () => {dispatch(getFullDataAsync())}
+        getFullDataAsync: () => {dispatch(getFullDataAsync())},
+        putFullDataAsync: (info: FullData) => {dispatch(putFullDataAsync(info))}
     }
 };
 

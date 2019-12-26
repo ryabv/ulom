@@ -30,11 +30,11 @@ app.get('/', (req, res) => {
 });
 
 app.put('/', JSONParser, (req, res) => {
-    const filePath = path.join(__dirname, `./data/test.json`);
+    const filePath = path.join(__dirname, `./data/${req.query.user}-${req.query.date}.json`);
     const data = JSON.stringify(req.body);
     fs.writeFile(filePath, data, err => {
         if (err) throw err;
-        console.log('Saved!');
+        console.log('Updated!');
     });
     res.end();
 });

@@ -1,5 +1,11 @@
-import { GET_FULL_DATA_SUCCESS, GET_FULL_DATA_FAILURE } from './fullData.types';
-import { FullData, fullDataRequest } from './fullData.types';
+import { 
+    GET_FULL_DATA_SUCCESS, 
+    GET_FULL_DATA_FAILURE,
+    PUT_FULL_DATA_SUCCESS, 
+    PUT_FULL_DATA_FAILURE,
+    FullData,
+    fullDataRequest
+} from './fullData.types';
 
 const initialState: FullData = {
     "settings": {
@@ -38,6 +44,8 @@ export const fullDataReducer = (state = initialState, action: fullDataRequest) =
         case GET_FULL_DATA_SUCCESS:
             return { ...state, info: action.payload };
         case GET_FULL_DATA_FAILURE:
+        case PUT_FULL_DATA_SUCCESS:
+        case PUT_FULL_DATA_FAILURE:
             return state;
         default:
             return state;

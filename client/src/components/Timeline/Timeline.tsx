@@ -9,10 +9,11 @@ const cnTimeline = cn('Timeline');
 
 interface TimelineProps {
     timeUnitValueInMins: number,
-    info: FullData
+    info: FullData,
+    updateInfo: (info: FullData) => void
 }
 
-const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins, info }) => {
+const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins, info, updateInfo }) => {
     console.log('TL', info);
     const unitsPerHour = 60 / timeUnitValueInMins;
     const [ isDesktop, setIsDesktop ] = useState(document.body.clientWidth > 700);
@@ -100,6 +101,14 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins, info }) => {
                 for (let i = 0; i < activeTimeUnits.length; i++) {
                     activeTimeUnits[i].style.backgroundColor = info.cases_categories[+catId[0]].color;
                     activeTimeUnits[i].classList.add(`TimeUnit_cat_${catId}`);
+                    const tuId = Number(activeTimeUnits[i].getAttribute('id'));
+                    if (tuId) {
+                        info.time_units[tuId - 1].cat_id = info.cases_categories[+catId[0]].id;
+                        updateInfo(info);
+                    } else {
+                        console.error('Не получилось перезаписать');
+                    }
+                    
                 }
             }
         }

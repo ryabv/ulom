@@ -3,6 +3,8 @@ import { Action } from "redux";
 
 export const GET_FULL_DATA_SUCCESS = 'GET_FULL_DATA_SUCCESS';
 export const GET_FULL_DATA_FAILURE = 'GET_FULL_DATA_FAILURE';
+export const PUT_FULL_DATA_FAILURE = 'PUT_FULL_DATA_FAILURE';
+export const PUT_FULL_DATA_SUCCESS = 'PUT_FULL_DATA_SUCCESS';
 
 
 export interface fullDataRequest extends Action {
