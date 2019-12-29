@@ -2,14 +2,14 @@ import React, { FC } from 'react';
 import './Layout.scss';
 import Header from '../Header/Header';
 import Main from '../Main/Main';
-import Timeline from '../Timeline/Timeline';
+import TimelineContainer from '../Timeline/TimelineContainer';
 
 const Layout: FC = () => {
     return (
         <div className="Layout">
             <Header />
             <Main>
-                <Timeline timeUnitValueInMins={5} />
+                <TimelineContainer />
             </Main>
         </div>
     );

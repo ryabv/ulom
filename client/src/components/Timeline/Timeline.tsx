@@ -3,16 +3,19 @@ import './Timeline.scss';
 import TimeUnit from '../TimeUnit/TimeUnit'
 import ShortcutMenu from '../ShortcutMenu/ShortcutMenu';
 import { cn } from '@bem-react/classname';
+import { FullData } from '../../store/fullData/fullData.types';
 
 const cnTimeline = cn('Timeline');
 
 interface TimelineProps {
-    timeUnitValueInMins: number
+    timeUnitValueInMins: number,
+    info: FullData,
+    updateInfo: (info: FullData) => void
 }
 
-const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
+const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins, info, updateInfo }) => {
+    console.log('TL', info);
     const unitsPerHour = 60 / timeUnitValueInMins;
-    const unitsPerDay = 24 * unitsPerHour;
     const [ isDesktop, setIsDesktop ] = useState(document.body.clientWidth > 700);
     const [ isMouseDowned, setIsMouseDowned ] = useState(false);
     const [ selectedRange, setSelectedRange ] = useState({start: 0, end: 0});
@@ -80,7 +83,7 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
             setIsMouseDowned(true);
             const time = t.classList.value.match(/(_h_).+/);
             const timeValue = time ? time[0].match(/\d+/) : '';
-            const currTimeUnits = document.querySelectorAll(`.TimeUnit_h_${timeValue ? timeValue[0] : 'nothing'}:not(.TimeUnit_outdated)`);
+            const currTimeUnits = document.querySelectorAll(`.TimeUnit_h_${timeValue ? timeValue[0] : 'nothing'}_:not(.TimeUnit_outdated)`);
             
             for (let i = 0; i < currTimeUnits.length; i++) {
                 currTimeUnits[i].classList.add('TimeUnit_selected');
@@ -90,14 +93,22 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 setSelectedHours({ start: Number(timeValue[0]), end: Number(timeValue[0]) });
             }
         } else if (checkIsShortcutMenuItem(t)) {
-            const colorClass = t.classList.value.match(/ShortcutMenu-Color_\w+/);
-            const activeTimeUnits = document.getElementsByClassName('TimeUnit_selected');
-            if (colorClass && activeTimeUnits.length) {
-                const color = colorClass[0].match(/_\w+/);
+            const idAttribute = t.getAttribute('id') || '0';
+            const catId = idAttribute.match(/\d+/);
+            const activeTimeUnits = document.getElementsByClassName('TimeUnit_selected') as unknown as HTMLElement[];
+
+            if (catId && catId[0] && activeTimeUnits.length) {
                 for (let i = 0; i < activeTimeUnits.length; i++) {
-                    activeTimeUnits[i].classList.value = activeTimeUnits[i].classList.value.replace(/TimeUnit_case_\w+/g, '');
-                    activeTimeUnits[i].classList.add(`TimeUnit_case${color}`);
+                    activeTimeUnits[i].style.backgroundColor = info.cases_categories[+catId[0]].color;
+                    activeTimeUnits[i].classList.add(`TimeUnit_cat_${catId}`);
+                    const tuId = Number(activeTimeUnits[i].getAttribute('id'));
+                    if (tuId) {
+                        info.time_units[tuId - 1].cat_id = info.cases_categories[+catId[0]].id;
+                    } else {
+                        console.error('Не получилось перезаписать');
+                    }
                 }
+                updateInfo(info);
             }
         }
     };
@@ -152,13 +163,14 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 }
                 
                 const timeValue = time ? time[0].match(/\d+/) : '';
-                
+
                 if (timeValue) {
                     setSelectedHours({ ...selectedHours, end: Number(timeValue[0]) });
                 }
 
                 const classesWithActiveHours = [];
                 let start, end;
+
                 if (selectedHours.start < selectedHours.end) {
                     start = selectedHours.start;
                     end = selectedHours.end;
@@ -168,13 +180,12 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
                 }
 
                 for (let i = start; i <= end; i++) {
-                    classesWithActiveHours.push(`TimeUnit_h_${i}`);
+                    classesWithActiveHours.push(`TimeUnit_h_${i}_`);
                 }
 
                 const timeUnitsWithActiveHours = classesWithActiveHours.join('|');
                 const searchString = new RegExp(timeUnitsWithActiveHours);
                 const timeUnits = document.querySelectorAll('.TimeUnit:not(.TimeUnit_outdated)');
-
                 for (let i = 0; i < timeUnits.length; i++) {
                     if (~timeUnits[i].classList.value.search(searchString)) {
                         timeUnits[i].classList.add('TimeUnit_selected');
@@ -209,80 +220,63 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
         }
     };
 
-    const makeGrid = () => {
-        const timeUnits = [];
 
-        if (isDesktop) {
-            for (let i = 0; i < unitsPerDay; i++) {
-                const h = i % 24;
-                const min = Math.floor(i / 24) * timeUnitValueInMins;
-                const isOutdated = now.getHours() > h || (now.getHours() === h && now.getMinutes() >= min + timeUnitValueInMins);
+    function drawScheme() {
+        if (info) {
+            const timeUnits: any = [];
 
-                if (i % 24 === 0) {
+            for(let unit of info.time_units) {
+
+                if (new Date(unit.time).getMinutes() === 0) {
                     timeUnits.push(<div
-                        key={`time-${i}`}
-                        className={cnTimeline('Header', {minutes: true, min: min})}
-                    >{min ? min : ''}</div>);
+                        key={`time-${unit.id}`}
+                        className={cnTimeline('Header', {hours: true, h: new Date(unit.time).getHours()})}
+                    >{new Date(unit.time).getHours()}</div>);
                 }
 
-                timeUnits.push(<TimeUnit
-                    id={i * unitsPerHour % unitsPerDay + Math.floor(i * unitsPerHour / unitsPerDay)}
-                    h={h}
-                    min={min}
-                    key={i}
-                    classes={isOutdated ? ['TimeUnit_outdated'] : []}
-                />);
-            }
-        } else {
-            for (let i = 0; i < unitsPerDay; i++) {
-                const h = Math.floor(i / unitsPerHour);
-                const min = i % unitsPerHour * timeUnitValueInMins;
-                const isOutdated = now.getHours() > h || (now.getHours() === h && now.getMinutes() >= min + timeUnitValueInMins);
+                const isOutdated = now > new Date(unit.time);
 
-                if (i % unitsPerHour === 0) {
-                    timeUnits.push(<div 
-                        key={`hours-${i}`}
-                        className={cnTimeline('Header', {hours: true, h: h})}>{h}</div>);
+                const extraClasses = [
+                    `TimeUnit_case_${unit.case_id}`,
+                    `TimeUnit_cat_${unit.cat_id}`
+                ];
+
+                if (isOutdated) {
+                    extraClasses.push('TimeUnit_outdated');
                 }
-    
-                timeUnits.push(<TimeUnit 
-                    id={i}
-                    h={h}
-                    min={min}
-                    key={i}
-                    classes={isOutdated ? ['TimeUnit_outdated'] : []}
-                />);
+                if (unit.cat_id) {
+                    timeUnits.push(<TimeUnit
+                        id={unit.id}
+                        color={info.cases_categories[unit.cat_id].color}
+                        h={new Date(unit.time).getHours()}
+                        min={new Date(unit.time).getMinutes()}
+                        key={unit.id}
+                        classes={extraClasses}
+                    />);
+                } else {
+                    timeUnits.push(<TimeUnit
+                        id={unit.id}
+                        h={new Date(unit.time).getHours()}
+                        min={new Date(unit.time).getMinutes()}
+                        key={unit.id}
+                        classes={extraClasses}
+                    />);
+                }
             }
-        }        
 
-        return timeUnits;
-    };
-
-    const makeHoursLine = () => {
-        const hoursLine = [];
-
-        if (isDesktop) {
-            for (let i = -1; i <= 23; i++) {
-                const val = ~i ? i : '';
-                hoursLine.push(<div
-                    key={i}
-                    className={cnTimeline('Header', {hours: true, h: val})}>{val}</div>);
-            }
+            return timeUnits;
         }
+    }
 
-        return hoursLine;
-    };
 
     const makeMinutesLine = () => {
         const minutesLine = [];
 
-        if (!isDesktop) {
-            for (let i = -1; i < unitsPerHour; i++) {
-                const val = ~i ? i * timeUnitValueInMins : '';
-                minutesLine.push(<div
-                    key={i}
-                    className={cnTimeline('Header', {minutes: true, min: val})}>{val ? val : ''}</div>);
-            }
+        for (let i = -1; i < unitsPerHour; i++) {
+            const val = ~i ? i * timeUnitValueInMins : '';
+            minutesLine.push(<div
+                key={i}
+                className={cnTimeline('Header', {minutes: true, min: val})}>{val ? val : ''}</div>);
         }
 
         return minutesLine;
@@ -298,13 +292,14 @@ const Timeline: FC<TimelineProps> = ({ timeUnitValueInMins }) => {
             onTouchEnd={handleMouseUp}
             className={cnTimeline()}
         >
-            {isDesktop ? makeHoursLine() : makeMinutesLine()}
-            {makeGrid()}
+            {makeMinutesLine()}
+            {drawScheme()}
             <ShortcutMenu 
                 isMobile={!isDesktop}
                 visible={showShortcutMenu} 
                 x={coordsForShortcutMenu.x} 
-                y={coordsForShortcutMenu.y} 
+                y={coordsForShortcutMenu.y}
+                casesCategories={info ? info.cases_categories : []}
             />
         </div>
     );

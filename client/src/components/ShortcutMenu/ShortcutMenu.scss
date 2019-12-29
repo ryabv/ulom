@@ -12,7 +12,7 @@
     min-height: $size / 1.4;
     padding: $size / 2 $size / 1.5;
     background-color: #fff;
-    border-radius: 500px;
+    border-radius: 20px;
     box-shadow: rgba(0,0,0,.12) 0 3px 13px 1px;
 
     &_visible {
@@ -26,22 +26,6 @@
         box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
         box-sizing: border-box;
         border-radius: 50%;
-
-        &_work {
-            background: $work;
-        }
-
-        &_rest {
-            background: $rest;
-        }
-
-        &_sleep {
-            background: $sleep;
-        }
-
-        &_gym {
-            background: $gym;
-        }
     }
 }
 
