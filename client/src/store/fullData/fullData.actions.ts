@@ -28,7 +28,7 @@ export const putFullDataFailure = () => ({
 
 export const getFullDataAsync = () => {
     return (dispatch: Dispatch) => {
-        fetch('http://localhost:3001?user=username&date=2019-12-27')
+        fetch('http://localhost:3001?user=username&date=2019-12-29')
             .then(res => {
                 if (res.status === 200) {
                     dispatch(getFullDataSuccess(res.json()));
@@ -44,7 +44,7 @@ export const getFullDataAsync = () => {
 
 export const putFullDataAsync = (data: FullData) => {
     return (dispatch: Dispatch) => {
-        fetch('http://localhost:3001?user=username&date=2019-12-27', {
+        fetch('http://localhost:3001?user=username&date=2019-12-29', {
             method: 'PUT',
             body: JSON.stringify(data),
             headers: {

@@ -1,11 +1,16 @@
 const express = require('express');
+const time = require('time');
 const path = require('path');
 const fs = require('fs');
 const bodyParser = require("body-parser");
+const createTodayFile = require('./utils/createTodayFile');
 
 const JSONParser = bodyParser.json();
 const app = express();
 const port = 3001;
+
+const now = new time.Date();
+now.setTimezone('Europe/Amsterdam', true);
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -18,11 +23,15 @@ app.listen(port);
 console.log(`Сервер запущен на ${port} порту`);
 
 
+// РУЧКИ
+
 app.get('/', (req, res) => {
     const filePath = path.join(__dirname, `./data/${req.query.user}-${req.query.date}.json`);
     fs.access(filePath, err => {
         if (err) {
-            res.status(404).send('Файл по данному пути не найден');
+            const newFilePath = createTodayFile();
+            createTodayFile()
+                .then(result => res.sendFile(result), err => res.sendStatus(404));
         } else {
             res.sendFile(filePath);
         }

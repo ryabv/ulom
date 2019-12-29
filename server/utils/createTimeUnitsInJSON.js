@@ -15,3 +15,5 @@ function createTimeUnitsScheme(minInOne = 5) {
 
 	return result;
 }
+
+module.exports = createTimeUnitsScheme;
